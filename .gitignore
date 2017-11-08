@@ -1,6 +1,7 @@
 node_modules
 server
 src/config/auth.js
+src/config/algolia.js
 *.log
 .env*
 .watchmanconfig
