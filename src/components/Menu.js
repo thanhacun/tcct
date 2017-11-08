@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, NavItem, NavDropdown } from 'react-bootstrap';
 
-import { menuItems } from '../data/apps';
 import { tcctMenuItems } from '../data/tcct';
 import { getUserInfo } from '../actions/userActions';
 
@@ -18,17 +17,14 @@ class Menu extends Component {
       <div className="container">
         <Navbar inverse collapseOnSelect fluid>
           <Navbar.Header>
-            <Navbar.Brand><a href="/">THCN's Apps</a></Navbar.Brand>
+            <Navbar.Brand><a href="/">Kim Bong Mieu</a></Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/map"><NavItem eventKey={1}>Projects Map</NavItem></LinkContainer>
-              <NavDropdown eventKey={2} title="TCCT" id="tcct">
+              <LinkContainer to="/tcct/showtho"><NavItem eventKey={1}>TCCT</NavItem></LinkContainer>
+              <NavDropdown eventKey={2} title="Chi tiết" id="tcct">
                 {tcctMenuItems}
-              </NavDropdown>
-              <NavDropdown eventKey={3} title="Apps list" id="apps-dropdown">
-                {menuItems}
               </NavDropdown>
             </Nav>
             <Nav pullRight>

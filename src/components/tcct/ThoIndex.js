@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 /*=== ALGOLIA InstantSearch ===*/
-import { InstantSearch, Hits, SearchBox, Highlight, RefinementList, Pagination,
-  CurrentRefinements, ClearAll} from 'react-instantsearch/dom';
+import { InstantSearch } from 'react-instantsearch/dom';
 import { connectSearchBox, connectHits, connectHighlight } from 'react-instantsearch/connectors'
-//import 'react-instantsearch-theme-algolia/style.min.css'
+import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 import { ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup, FormControl } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -53,12 +52,9 @@ const connectAlgolia = (LocalIndex) => {
         </FormGroup>
       );
       const ConnectedSearchBox = connectSearchBox(CustomizedSearchBox);
-
       return (
         <InstantSearch
-          appId="4VFRX3XOJ8"
-          apiKey="b2e1639c8e855fd8e75aca9bf8b0f051"
-          indexName="dev_THO"
+          {...algoliaConfig}
         >
         <ConnectedSearchBox />
         <ConnectedHits />
@@ -68,54 +64,6 @@ const connectAlgolia = (LocalIndex) => {
     }
   }
 }
-
-// class ThoSearch extends Component {
-//   render(){
-//     const CustomizedHits = ({hits}) => (
-//       <ListGroup>
-//         {hits.map(hit => (
-//           <ListGroupItem key={hit.objectID} onClick={(e) => console.log(e.target)}>
-//             {`${hit.index}. `}<Highlight attributeName="title" hit={hit} />
-//           </ListGroupItem>
-//         ))}
-//       </ListGroup>
-//     );
-//     const ConnectedHits = connectHits(CustomizedHits);
-//     const CustomizedSearchBox = ({currentRefinment, refine}) => (
-//       <input type="text" value={currentRefinment}
-//         onChange={(e) => refine(e.target.value)} />
-//     );
-//     const ConnectedSearchBox = connectSearchBox(CustomizedSearchBox);
-//     const Tho = ({hit}) => (
-//       <div style={{marginTop: '10px'}}>
-//         <span className="hit-name">
-//           {`${hit.index}. `}<Highlight attributeName="title" hit={hit} />
-//         </span>
-//       </div>
-//     );
-//     const Search = () => (
-//       <div className="container">
-//         {/* <CurrentRefinements/> */}
-//         {/* <ClearAll /> */}
-//         {/* <SearchBox /> */}
-//         <ConnectedSearchBox />
-//         {/* <RefinementList attributeName="category" /> */}
-//         {/* <Hits hitComponent={Tho}/> */}
-//         <ConnectedHits />
-//         <Pagination />
-//       </div>
-//     )
-//     return (
-//       <InstantSearch
-//         appId="4VFRX3XOJ8"
-//         apiKey="b2e1639c8e855fd8e75aca9bf8b0f051"
-//         indexName="dev_THO"
-//       >
-//       <Search />
-//       </InstantSearch>
-//     )
-//   }
-// }
 
 class ThoIndex extends Component {
   constructor(props){

@@ -5,6 +5,10 @@ import { Route } from 'react-router';
 
 import ThoEdit from '../components/tcct/ThoEdit';
 import ThoDisplay from '../components/tcct/ThoDisplay';
+import UserSignup from '../components/UserSignup';
+import UserLogin from '../components/UserLogin';
+import UserProfile from '../components/UserProfile';
+import UserConnect from '../components/UserConnect';
 
 const tcctLinks = [
   {
@@ -20,6 +24,34 @@ const tcctLinks = [
     "des": "Xem thơ",
     "component": ThoDisplay,
     "menu": true
+  },
+  {
+    "id":3,
+    "path": "/login",
+    "des": "Login",
+    "component": UserLogin,
+    "menu": true
+  },
+  {
+    "id":4,
+    "path": "/signup",
+    "des": "Signup",
+    "component": UserSignup,
+    "menu": false
+  },
+  {
+    "id":5,
+    "path": "/profile",
+    "des": "Profile",
+    "component": UserProfile,
+    "menu": true
+  },
+  {
+    "id":6,
+    "path": "/connect",
+    "des": "User Connect",
+    "component": UserConnect,
+    "menu": false
   }
 ];
 
