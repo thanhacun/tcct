@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Form, FormGroup, ControlLabel, Jumbotron, Row, Col,
   FormControl, Button, ButtonToolbar} from 'react-bootstrap';
-import RichTextEditor, { RawHTML } from '../RichTextEditor';
+import RichTextEditor from '../RichTextEditor';
 
 import ThoIndex from './ThoIndex';
 import { modifyTho, saveDraftTho, getTho } from '../../actions/tcctActions';

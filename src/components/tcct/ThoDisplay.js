@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import renderHTML from 'react-render-html';
 import { connect } from 'react-redux';
 
-import jumbo_01 from './jumbo_bg_01.png';
+//import jumbo_01 from './jumbo_bg_01.png';
 import { getTho } from '../../actions/tcctActions';
 import ThoIndex from './ThoIndex';
 
@@ -19,9 +19,9 @@ class ThoDisplay extends Component {
   }
 
   render(){
-    const jumboStyle = {
-      backgroundImage: `url(${jumbo_01})`
-    };
+    // const jumboStyle = {
+    //   backgroundImage: `url(${jumbo_01})`
+    // };
 
     const Jumbo = (props) => {
       return (
@@ -36,14 +36,12 @@ class ThoDisplay extends Component {
       return (
         // TODO better way to handle busy
         <div className="container">
-          <Jumbo style={jumboStyle} />
+          <Jumbo />
           <i className="text-center text-success fa fa-spinner fa-spin fa-3x fa-fw"></i>
         </div>
       )
     } else {
       // NOTE: why thos[rndNumber].title is not available here
-      const thoLength = this.props.tho.length;
-      const { selectedID } = this.state;
       const { tho } = this.props;
       const thoStyle = {
         container: {
@@ -67,7 +65,7 @@ class ThoDisplay extends Component {
 
       return (
         <div className="container">
-          <Jumbo style={jumboStyle} />
+          <Jumbo />
           <Grid>
             <Row className="show-grid">
               <Col xsHidden smHidden md={4} mdOffset={2}>

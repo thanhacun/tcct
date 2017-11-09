@@ -10,7 +10,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { ControlLabel, FormControl, FormGroup, Button } from 'react-bootstrap';
+import { ControlLabel, FormControl } from 'react-bootstrap';
 
 class RichTextEditor extends Component {
   constructor(props){
@@ -27,7 +27,6 @@ class RichTextEditor extends Component {
   }
 
   updateHTML2Editor(){
-    const rawHTML = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
     const contentBlock = htmlToDraft(this.props.value);
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);

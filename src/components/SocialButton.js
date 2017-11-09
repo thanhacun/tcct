@@ -10,6 +10,15 @@ const Button = ({ children, triggerLogin, ...props }) => (
   </button>
 );
 
+// const Button = (props) => {
+//   const { children, triggerLogin, ...rest } = props;
+//   return (
+//     <button onClick={triggerLogin} {...rest}>
+//       { children }
+//     </button>
+//   )
+// }
+
 //const RawSocialButton = SocialLogin(Button);
 
 // add appId to the component based on the value of provider
@@ -30,11 +39,9 @@ const Button = ({ children, triggerLogin, ...props }) => (
 
 //user compose to make component
 const SocialButton = compose(
-  withProps((props) => ({
+  withProps(props => ({
     appId: config.appId[props.provider]
   }))
-)(
-  SocialLogin(Button)
-)
+)(SocialLogin(Button))
 
 export default SocialButton;

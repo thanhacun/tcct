@@ -1,5 +1,6 @@
 node_modules
 server
+build
 src/config/auth.js
 src/config/algolia.js
 *.log
