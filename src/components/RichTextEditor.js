@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 // REACT-DRAFT-WYSIWYG ============
-import { Editor } from 'react-draft-wysiwyg';
+  import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import './richtextEditor.css';
 
 // MEDIUM-DRAFT ===================
 //import { Editor, createEditorState } from 'medium-draft';

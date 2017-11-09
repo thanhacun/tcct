@@ -17,6 +17,7 @@ class UserSignup extends Component {
     this.state ={int_email: '', int_password: ''};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSocialLoginFailer = this.handleSocialLoginFailer.bind(this);
   }
 
   handleChange(e, type){
@@ -29,6 +30,10 @@ class UserSignup extends Component {
     this.props.localSignup(this.state.int_email, this.state.int_password);
     this.setState({int_email: '', int_password: ''});
     e.preventDefault();
+  }
+
+  handleSocialLoginFailer(response){
+    console.log(response);
   }
 
   render(){
@@ -50,13 +55,13 @@ class UserSignup extends Component {
         <h1>Social Signup</h1>
         <SocialButton provider="facebook"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
-          // onLoginFailure={handleSocialLoginFailer}
+          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
           className="btn btn-primary"><span className="fa fa-facebook"></span> Facebook
         </SocialButton>
-        
+
         <SocialButton provider="google"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
-          // onLoginFailure={handleSocialLoginFailer}
+          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
           className="btn btn-danger"><span className="fa fa-google-plus"></span> Google
         </SocialButton>
         {/* {this.props.facebook.token ? <Button onClick={this.props.facebookAPILogin(this.props.facebook.token)}></Button> : <span>Waiting for facebook token ...</span>} */}
