@@ -1,5 +1,5 @@
 {
-  "name": "react_portal",
+  "name": "tcct-spa",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -35,7 +35,7 @@
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
-    "start": "PORT=3038 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
@@ -49,5 +49,5 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://api:3000"
 }

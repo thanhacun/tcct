@@ -6,3 +6,5 @@ src/config/algolia.js
 *.log
 .env*
 .watchmanconfig
+.eslintignore
+.eslintrc.back
