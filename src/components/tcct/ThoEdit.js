@@ -33,8 +33,10 @@ class ThoEdit extends Component {
   }
 
   handleSubmit(e){
-    // Check authenticate TODO: check user role
-    if (this.props.user.userEmail) {
+    // [X] TODO: check user role
+    // [] TODO: check real user
+    // [] TODO: add user role
+    if (this.props.user.userEmail && this.props.user.role.admin) {
       this.props.modifyTho(this.state, 'save'); // submit new Tho
       this.resetForm(); // reset the form
     } else {
@@ -59,7 +61,7 @@ class ThoEdit extends Component {
   }
 
   resetForm(){
-    this.setState({index: '', title: '', content: '', footer: '', syncHTMLtoEditor: true}, () => {
+    this.setState({index: '', title: '', content: '', footer: '', imgURl: '', syncHTMLtoEditor: true}, () => {
       // turnoff syncHTMLtoEditor to make sure updateHTML2Editor happen only
       // one time during componentDidUpdate lifecycle
       this.setState({syncHTMLtoEditor: false})
@@ -108,7 +110,12 @@ class ThoEdit extends Component {
                     <ControlLabel>Ghi chú</ControlLabel>
                     <FormControl type="text" value={this.state.footer}
                       onChange={(e) => this.handleChange(e, 'footer')} ></FormControl>
-                    </FormGroup>
+                  </FormGroup>
+                  <FormGroup>
+                    <ControlLabel>Hình minh họa</ControlLabel>
+                    <FormControl type="text" value={this.state.imgUrl}
+                      onChange={(e) => this.handleChange(e, 'imgUrl')} ></FormControl>
+                  </FormGroup>
                     <ButtonToolbar>
                       <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
                       <Button bsStyle="danger" onClick={() => this.props.modifyTho(this.state, 'delete')}>Xóa</Button>

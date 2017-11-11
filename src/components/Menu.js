@@ -22,7 +22,6 @@ class Menu extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/tcct/showtho"><NavItem eventKey={1}>TCCT</NavItem></LinkContainer>
               <NavDropdown eventKey={2} title="Chi tiết" id="tcct">
                 {tcctMenuItems}
               </NavDropdown>

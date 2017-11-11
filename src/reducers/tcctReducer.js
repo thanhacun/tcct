@@ -30,7 +30,7 @@ const tcct = (state=tcctInitialState, action, userData) => {
     case 'GET_THO_FULFILLED':
       return { ...state, busy: false, tho: payload.data }
     case 'GET_THO_REJECTED':
-      return { ...state };
+      return { ...state, busy: false };
 
     default:
       return { ...state, user: userData };

@@ -7,6 +7,7 @@ const userInitialState = {
   local: {},
   facebook: {},
   google: {},
+  role: {admin: false, user: false}
 };
 const providers = ['local', 'facebook', 'google'];
 let [userData, userEmail] = [null, {}, null]
@@ -19,7 +20,7 @@ const cleanData = (rawData) => {
     } else {
       accResult[provider] = {};
     }
-    return accResult;
+    return {...accResult, role: rawData.role};
   }, {});
 }
 

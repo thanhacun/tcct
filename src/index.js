@@ -9,8 +9,7 @@ import 'font-awesome/css/font-awesome.css'
 
 import registerServiceWorker from './registerServiceWorker';
 import Menu from './components/Menu';
-import Welcome from './components/Welcome';
-import RichTextEditor from './components/RichTextEditor';
+import ThoDisplay from './components/tcct/ThoDisplay';
 
 import store, { history } from './store';
 import tcctRoutes from './data/tcct';
@@ -22,8 +21,7 @@ ReactDOM.render(
   <ConnectedRouter history={history}>
     <div>
       <Menu />
-      <Route exact path="/" component={Welcome} />
-      <Route path="/richtext" component={RichTextEditor} />
+      <Route exact path="/" component={ThoDisplay} />
       {tcctRoutes}
     </div>
   </ConnectedRouter>

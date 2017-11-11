@@ -12,14 +12,14 @@ import UserConnect from '../components/UserConnect';
 
 const tcctLinks = [
   {
-    "id": 0,
+    "id": 1,
     "path": "/tcct/addtho",
-    "des": "Thêm thơ mới",
+    "des": "Sửa thơ",
     "component": ThoEdit,
     "menu": true
   },
   {
-    "id": 1,
+    "id": 0,
     "path": "/tcct/showtho",
     "des": "Xem thơ",
     "component": ThoDisplay,
@@ -55,7 +55,8 @@ const tcctLinks = [
   }
 ];
 
-const tcctMenuItems = tcctLinks.map((item, key) => {
+const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
+const tcctMenuItems = sortedMenu.map((item, key) => {
   if (item.menu) {
     return (
       <LinkContainer to={item.path} key={`tcct_${item.id}`}>
