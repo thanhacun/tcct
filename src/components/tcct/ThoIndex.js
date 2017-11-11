@@ -92,9 +92,9 @@ class ThoIndex extends Component {
   }
 
   render(){
-    const { selectedID } = this.props;
-    const thoLength = this.props.tho.length;
-    const sortedTho = this.props.tho.sort((tho1, tho2) => tho1.index > tho2.index);
+    const { selectedID, tho } = this.props;
+    const thoLength = tho.length;
+    const sortedTho = tho.sort((tho1, tho2) => tho1.index > tho2.index);
     const activeStyle = {
       fontWeight: 'bold'
     }
@@ -121,7 +121,7 @@ class ThoIndex extends Component {
 
     return (
       <div>
-        <ListGroup>{IndexList}</ListGroup>
+        <ListGroup>{ IndexList }</ListGroup>
         <Toolbar />
       </div>
     );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import renderHTML from 'react-render-html';
 import { connect } from 'react-redux';
-import { branch } from 'recompose';
+// import { branch } from 'recompose';
 import { getTho } from '../../actions/tcctActions';
 import ThoIndex from './ThoIndex';
 import BusyLoading from '../BusyLoading';
@@ -37,11 +37,19 @@ const EachThoDisplay = ({eachTho}) => {
 class ThoDisplay extends Component {
   constructor(props){
     super(props);
+    this.handleIndexSelect = this.handleIndexSelect.bind(this);
     this.state = {selectedID: 0};
   }
 
   componentDidMount(){
     this.props.getTho();
+  }
+
+  handleIndexSelect(selectedIndex){
+    const selectedID = this.props.tho.reduce((returnID, currentTho, currentID) => {
+      return (currentTho.index === selectedIndex) ? currentID : returnID;
+    }, 0);
+    this.setState({selectedID, selectedIndex});
   }
 
   render(){
@@ -63,9 +71,10 @@ class ThoDisplay extends Component {
     } else {
       // NOTE: why thos[rndNumber] is not available here
       const { tho } = this.props;
-      const ThoList = tho.map((eachTho) => {
-        return <EachThoDisplay eachTho={eachTho} />
-      });
+      const sortedTho = tho.sort((tho1, tho2) => tho1.index > tho2.index);
+      // const ThoList = sortedTho.map((eachTho) => {
+      //   return <EachThoDisplay eachTho={eachTho} />
+      // });
 
       return (
         <div className="container">
@@ -75,21 +84,18 @@ class ThoDisplay extends Component {
               <Col xsHidden smHidden md={4} mdOffset={2}>
                 <ThoIndex
                   tho={this.props.tho} selectedID={this.state.selectedID}
-                  indexOnClick={ id => this.setState({selectedID: id}) }
-                  getRandom = { randomID => this.setState({selectedID: randomID}) }
-                  handleNavigation = { navigatedId => this.setState({selectedID: navigatedId}) }
+                  indexOnClick={ (selectedID) => this.setState({selectedID}) }
+                  getRandom = { selectedID => this.setState({selectedID}) }
+                  handleNavigation = { selectedID => this.setState({selectedID}) }
                 />
                 {/* <Toolbar /> */}
               </Col>
-              <Col xs={12} sm={4} clearFix>
-                {/* TODO: use HOC */}
-                {/* <EachThoDisplay eachTho={tho[this.state.selectedID]}/> */}
-                {ThoList[this.state.selectedID]}
+              <Col xs={12} sm={4}>
+                {(sortedTho[this.state.selectedID]) ? <EachThoDisplay eachTho={sortedTho[this.state.selectedID]} /> : ''}
+                {/* {ThoList[this.state.selectedID]} */}
+                <Button onClick={() => console.log('Show index')}><FontAwesome name="search" /> Mục lục</Button>
               </Col>
             </Row>
-            <Row><Col mdHidden smHidden xs={12}>
-              <Button onClick={() => console.log('Show index')}><FontAwesome name="search" /> Mục lục</Button>
-            </Col></Row>
           </Grid>
         </div>
       );
@@ -103,5 +109,6 @@ const mapDispatchToProps = dispatch => ({
   getTho: () => dispatch(getTho())
 });
 
-//const ThoDisplayWithBusy = branch(({props}) => true, BusyLoading())(ThoDisplay);
+//const ThoDisplayWithBusy = branch(({props}) => props.busy, BusyLoading)(ThoDisplay);
+//const ThoDisplayWithBusy = BusyLoading(ThoDisplay);
 export default connect(mapStateToProps, mapDispatchToProps)(ThoDisplay);
