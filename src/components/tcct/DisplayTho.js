@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 
 /*=== ALGOLIA InstantSearch ===*/
 import { InstantSearch, Configure} from 'react-instantsearch/dom';
-import { connectSearchBox, connectHits, connectHighlight,
+import { connectSearchBox, connectHits, connectHighlight, connectPoweredBy,
   connectPagination} from 'react-instantsearch/connectors'
 import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import renderHTML from 'react-render-html';
-import { Pagination, FormGroup, FormControl, ListGroup, Row, Col,
-  ListGroupItem, Jumbotron, Clearfix, Button } from 'react-bootstrap';
+import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup,
+  ListGroupItem, Jumbotron, Clearfix, Button, Image, Thumbnail } from 'react-bootstrap';
 import FontAwesome  from 'react-fontawesome';
 
 const Jumbo = ({props}) =>
   <Jumbotron className="text-center" {...props}>
-    <h2>Theo cánh chim trời - KIM BỒNG MIÊU</h2>
+    <h2>Theo cánh chim trời</h2>
     <p>Dành tặng cố tác giả Kim Bồng Miêu<br/>
        Tuyển tập các bài thơ đã đăng của tác giả<br/>
     </p>
@@ -23,15 +23,17 @@ const DisplayUnitTho = ({tho}) => {
   const thoStyle = {
     container: {
       border: 'solid 1px',
-      borderColor: 'lightgrey'
+      borderColor: 'lightgrey',
     },
     content: (tho.imgUrl) ? {
       padding: '5px',
       backgroundImage: `url(${tho.imgUrl})`,
       backgroundSize: 'cover',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      minHeight: '500px'
     } : {
-      padding: '5px'
+      padding: '5px',
+      minHeight: '500px'
     }
   };
 
@@ -68,7 +70,7 @@ class DisplayTho extends Component {
       }
 
       render(){
-        const {hits} = this.props
+        const {hits} = this.props;
         const hitsList = hits.map((hit, selectID) =>
           <ListGroupItem
             active={selectID === this.state.selectID}
@@ -78,32 +80,43 @@ class DisplayTho extends Component {
           {`${hit.index}. `} <ConnectedHighlight attributeName="title" hit={hit} />
           </ListGroupItem>
         );
+        const IndexMenu =
+          <Col xsHidden md={4} mdOffset={1} sm={5}>
+            <ConnectedSearchBox />
+            <ListGroup>{ hitsList }</ListGroup>
+            <ConnectedPagination/>
+          </Col>
+        const floatBtnStyle = {
+          position: 'absolute',
+          bottom: '5%',
+          right: '10%'
+        }
+
         return (
           <div>
             <Row>
-              <Col xsHidden md={4} mdOffset={1}><ConnectedSearchBox /></Col>
-              <Clearfix />
-            </Row>
-            <Row>
-              <Col xsHidden md={4} mdOffset={1}>
-                <ListGroup>{ hitsList }</ListGroup>
-                <ConnectedPagination />
-              </Col>
-              <Col xs={12} md={5} mdOffset={1}>
+              {IndexMenu}
+              <Clearfix visibleXsBlock/>
+              <Col xs={12} md={6} sm={7}>
                 {(hits[this.state.selectID]) ? <DisplayUnitTho tho={hits[this.state.selectID]} />: ''}
               </Col>
-              <Col xs={12} mdHidden lgHidden>
-                <Button bsStyle="default"><FontAwesome name="bars"/></Button>
+              <Col xs={12} smHidden mdHidden>
+                <Button
+                  onClick={() => console.log('show IndexMenu')}><FontAwesome name="bars"
+                  style={floatBtnStyle}/></Button>
               </Col>
-              <Clearfix />
+              {/* <Clearfix visibleXsBlock/> */}
             </Row>
           </div>
         );
       }
     }
 
-    const ConnectedHits = connectHits(({hits}) => <CustomizedHits hits = {hits}/>)
-
+    const ConnectedHits = connectHits(({hits}) => <CustomizedHits hits = {hits}/>);
+    const ConnectedLogo = connectPoweredBy(({url}) => {
+      const algoliaLogoUrl = 'https://www.algolia.com/assets/svg/algolia-logo-31b6f5702e2052e72c46f19466ce2aae.svg';
+      return(<a href={url}><Image responsive src={algoliaLogoUrl} /></a>);
+    });
     const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbPages }) => {
       return (
         <Pagination
@@ -113,12 +126,19 @@ class DisplayTho extends Component {
           onSelect={(eventKey) => {refine(eventKey)}}
         />
       )
-    })
+    });
 
     const CustomizedSearchBox = ({currentRefinment, refine}) => (
       <FormGroup>
-        <FormControl type="text" value={currentRefinment}
-          onChange={(e) => refine(e.target.value)} placeholder="Tìm theo tên bài hoặc nội dung"/>
+        <InputGroup>
+          {/* <InputGroup.Addon><FontAwesome name="search" /></InputGroup.Addon> */}
+          <InputGroup.Addon><ConnectedLogo /></InputGroup.Addon>
+          <FormControl type="text" value={currentRefinment}
+            onChange={(e) => refine(e.target.value)} placeholder="Tìm theo tên bài hoặc nội dung"/>
+          <InputGroup.Addon><FontAwesome name="times-circle" onClick={() => refine('')}/></InputGroup.Addon>
+          {/* <InputGroup.Button><ConnectedLogo /></InputGroup.Button> */}
+        </InputGroup>
+        {/* <ConnectedLogo /> */}
       </FormGroup>
     );
     const ConnectedSearchBox = connectSearchBox(CustomizedSearchBox);
@@ -127,10 +147,8 @@ class DisplayTho extends Component {
         <Jumbo />
         <InstantSearch {...algoliaConfig} >
             <Configure hitsPerPage={12}/>
-            <Row>
-              {/* <ConnectedSearchBox /> */}
-              {/* <ConnectedPagination /> */}
-            </Row>
+            {/* <ConnectedSearchBox /> */}
+            {/* <ConnectedPagination /> */}
             <ConnectedHits />
         </InstantSearch>
       </div>
