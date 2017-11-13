@@ -9,21 +9,29 @@ import UserSignup from '../components/UserSignup';
 import UserLogin from '../components/UserLogin';
 import UserProfile from '../components/UserProfile';
 import UserConnect from '../components/UserConnect';
+import DisplayTho from '../components/tcct/DisplayTho';
 
 const tcctLinks = [
   {
+    "id": 0,
+    "path": "/tcct/xemtho",
+    "des": "Xem thơ mới",
+    "component": DisplayTho,
+    "menu": true
+  },
+  {
     "id": 1,
-    "path": "/tcct/addtho",
+    "path": "/tcct/suatho",
     "des": "Sửa thơ",
     "component": ThoEdit,
     "menu": true
   },
   {
-    "id": 0,
-    "path": "/tcct/showtho",
+    "id": 7,
+    "path": "/tcct/oldtho",
     "des": "Xem thơ",
     "component": ThoDisplay,
-    "menu": true
+    "menu": false
   },
   {
     "id":3,

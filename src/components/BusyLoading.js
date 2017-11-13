@@ -1,8 +1,8 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 
-export default () => (
+export default ({message}) => (
   <div className="container text-center">
-    <FontAwesome name="spinner" spin size="3x"/>
+    <FontAwesome name="spinner" spin size="3x"/> {message}
   </div>
 )

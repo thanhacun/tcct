@@ -11,7 +11,7 @@ import './richtextEditor.css';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { ControlLabel, FormControl } from 'react-bootstrap';
+import { ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 
 class RichTextEditor extends Component {
   constructor(props){
@@ -53,8 +53,10 @@ class RichTextEditor extends Component {
           editorClassName="editorClassName"
           onEditorStateChange={this.onEditorStateChange}
         />
-        <ControlLabel>{this.props.label}</ControlLabel>
-        <FormControl value={this.props.value} readOnly/>
+        <FormGroup>
+          <ControlLabel>{this.props.label}</ControlLabel>
+          <FormControl value={this.props.value} disabled/>
+        </FormGroup>
       </div>
     )
   }

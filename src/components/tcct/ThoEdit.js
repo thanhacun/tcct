@@ -3,9 +3,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { Form, FormGroup, ControlLabel, Jumbotron, Row, Col,
-  FormControl, Button, ButtonToolbar} from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, Jumbotron, Row, Col, FormControl,
+  Button, ButtonToolbar} from 'react-bootstrap';
 import RichTextEditor from '../RichTextEditor';
+import BusyLoading from '../BusyLoading';
 
 import ThoIndex from './ThoIndex';
 import { modifyTho, saveDraftTho, getTho } from '../../actions/tcctActions';
@@ -20,6 +21,7 @@ class ThoEdit extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleIndexClick = this.handleIndexClick.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.resetForm = this.resetForm.bind(this);
   }
 
@@ -52,7 +54,10 @@ class ThoEdit extends Component {
     this.setState({content: rawHTML}, () => rawHTML);
   }
 
-  handleIndexClick(selectedID){
+  handleIndexClick(selectedIndex){
+    const selectedID = this.props.tho.reduce((returnID, currentTho, currentID) => {
+      return (currentTho.index === selectedIndex) ? currentID : returnID;
+    }, 0);
     this.setState({ ...this.props.tho[selectedID], syncHTMLtoEditor: true}, () =>{
       // turnoff syncHTMLtoEditor to make sure updateHTML2Editor happen only
       // one time during componentDidUpdate lifecycle
@@ -68,10 +73,14 @@ class ThoEdit extends Component {
     })
   }
 
+  handleKeyPress(e){
+    console.log(e.target);
+  }
+
   render(){
     if (this.props.tho.busy){
       return(
-        <div>BUSY...</div>
+        <BusyLoading />
       )
     } else {
       return (
@@ -85,8 +94,9 @@ class ThoEdit extends Component {
         {/* recompose branch to show new form or edit form */}
 
         <Row>
-          <Col md={4}><ThoIndex tho={this.props.tho}
-            indexOnClick={(selectedID) => this.handleIndexClick(selectedID)} /></Col>
+          <Col md={4}><ThoIndex
+            tho={this.props.tho}
+            indexOnClick={(selectedID, selectedIndex) => this.handleIndexClick(selectedIndex)} /></Col>
           <Col md={8}>
             <h2>Nhập liệu</h2>
             <Form onSubmit={this.handleSubmit}>
@@ -117,9 +127,11 @@ class ThoEdit extends Component {
                       onChange={(e) => this.handleChange(e, 'imgUrl')} ></FormControl>
                   </FormGroup>
                     <ButtonToolbar>
-                      <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
-                      <Button bsStyle="danger" onClick={() => this.props.modifyTho(this.state, 'delete')}>Xóa</Button>
-                      <Button bsStyle="primary" onClick={this.resetForm}>Reset</Button>
+                      <Button type="submit" bsStyle="warning"
+                        onKeyPress={(e) =>this.handleKeyPress(e)}>Thêm/Lưu</Button>
+                      <Button bsStyle="danger"
+                        onClick={() => this.props.modifyTho(this.state, 'delete')} >Xóa</Button>
+                      <Button bsStyle="primary" type="reset" onClick={this.resetForm}>Reset</Button>
 
                     </ButtonToolbar>
                   </Form>

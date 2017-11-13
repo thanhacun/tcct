@@ -1,79 +1,99 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-/*=== ALGOLIA InstantSearch ===*/
-import { InstantSearch } from 'react-instantsearch/dom';
-import { connectSearchBox, connectHits, connectHighlight } from 'react-instantsearch/connectors'
-import algoliaConfig from '../../config/algolia';
-/*=== ALGOLIA InstantSearch ===*/
-import { ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup, FormControl } from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
 
+import { ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup,
+  FormControl, Pagination } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
+import BusyLoading from '../BusyLoading';
+import connectAlgolia from './connectAlgolia';
 
 //[ ] TODO: handling pages
 //[X] TODO: sortting tho
 //[X] TODO: handling buttons group here
 //[X] TODO: handling instant search
 
-/*=== HOC wraps LocalIndex to use data from ALGOLIA ===*/
-const connectAlgolia = (LocalIndex) => {
-  return class ConnectAlgolia extends Component {
-    render(){
-      const { tho, ...otherProps} = this.props;
-      const ConnectedHighlight = connectHighlight(
-        ({ highlight, attributeName, hit, highlightProperty }) => {
-          const parseHit = highlight({
-            attributeName,
-            hit,
-            highlightProperty: '_highlightResult'
-          });
-          const highlightedHits = parseHit.map((part, index) => {
-            if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>;
-            return part.value;
-          });
-          return <span>{highlightedHits}</span>;
-      });
-      const ConnectedHits = connectHits(({hits}) => {
-        const newHits = hits.map(hit => ({
-          ...hit,
-          // changing prop tho.title to return a Component, so LocalIndex can still
-          // use title in either plain text or Component
-          title: <ConnectedHighlight attributeName="title" hit={hit}/>
-        }));
-
-        return (
-          <LocalIndex tho={newHits} {...otherProps} />
-        )
-      });
-
-      const CustomizedSearchBox = ({currentRefinment, refine}) => (
-        <FormGroup>
-          <FormControl type="text" value={currentRefinment}
-            onChange={(e) => refine(e.target.value)} placeholder="Tìm theo tên bài hoặc nội dung"/>
-        </FormGroup>
-      );
-      const ConnectedSearchBox = connectSearchBox(CustomizedSearchBox);
-      return (
-        <InstantSearch
-          {...algoliaConfig}
-        >
-        <ConnectedSearchBox />
-        <ConnectedHits />
-
-        </InstantSearch>
-      )
+const paginationBar = (WrappedComponent, options) => {
+  return class PaginationBar extends Component {
+    constructor(props){
+      super(props);
+      this.state = {itemPerPage: 12, currentPage: 1, activePage: 1};
+      this.handleSelect = this.handleSelect.bind(this);
     }
+
+    handleSelect(eventKey){
+      this.setState({activePage: eventKey})
+    }
+
+    itemsOnPage(activePage, listThos){
+      const itemPerPage = options.itemPerPage;
+      const pageItems = listThos.slice(itemPerPage * (activePage - 1), itemPerPage * activePage );
+      return pageItems;
+    }
+
+    render(){
+      const { listThos, ...otherProps } = this.props
+      const { activePage } = this.state;
+      const onPageThos = this.itemsOnPage(activePage, listThos)
+      const pagiStatus = {
+        itemPerPage: options.itemPerPage,
+        activePage: activePage,
+      }
+
+      return (
+        <div>
+          <WrappedComponent listThos = {onPageThos} {...otherProps} {...pagiStatus}/>
+          <Pagination
+            prev next ellipsis maxButtons={5}
+            items={Math.ceil(listThos.length / options.itemPerPage)}
+            activePage={this.state.activePage}
+            onSelect={this.handleSelect}
+          />
+        </div>
+      )
+
+    }
+  };
+}
+
+class ListTho extends Component {
+  constructor(props){
+    super(props);
+    this.handleOnClick = this.handleOnClick.bind(this);
+    this.state={selectedID: 0}
+  }
+
+  handleOnClick(selectedID, index){
+    this.setState({selectedID}, () => this.props.indexOnClick(selectedID, index));
+  }
+
+  render(){
+    const {listThos, inPageID, inListID} = this.props;
+    const {selectedID} = this.state;
+    const activeStyle = {
+      fontWeight: 'bold'
+    };
+    const IndexTho = listThos.map((eachTho, id) =>
+      <ListGroupItem key={(eachTho.objectID) ? eachTho.objectID : `thoindex_${id}`}
+        disabled={selectedID === id ? true : false}
+        style={selectedID === id ? activeStyle: {}}
+        onClick={() => this.handleOnClick(id, eachTho.index)}
+      > {`${eachTho.index}. ` } {eachTho.title} </ListGroupItem>
+    );
+    return (
+      <ListGroup>{IndexTho}</ListGroup>
+    );
   }
 }
+
+const ListThoWithPage = paginationBar(ListTho, {
+  itemPerPage: 12
+});
 
 class ThoIndex extends Component {
   constructor(props){
     super(props);
     this.handleNavigation = this.handleNavigation.bind(this);
     this.getRandom = this.getRandom.bind(this);
-  }
-
-  handleOnClick(id){
-    this.props.indexOnClick(id);
   }
 
   getRandom(){
@@ -93,35 +113,27 @@ class ThoIndex extends Component {
 
   render(){
     const { selectedID, tho } = this.props;
-    const thoLength = tho.length;
-    const sortedTho = tho.sort((tho1, tho2) => tho1.index > tho2.index);
-    const activeStyle = {
-      fontWeight: 'bold'
-    }
-    const IndexList = sortedTho.map((tho, id) => {
-      return (
-        <ListGroupItem key={`thoindex_${id}`}
-          disabled={selectedID === id ? true : false}
-          style={selectedID === id ? activeStyle: {}}
-          onClick={() => this.handleOnClick(id)} >{`${tho.index}. ` } {tho.title}
-        </ListGroupItem>
-      );
-    });
+    //const sortedTho = tho.sort((tho1, tho2) => tho1.index - tho2.index);
 
     const Toolbar = () => (
       <ButtonGroup>
         <Button bsStyle='default' disabled={(selectedID === 0) ? true : false}
-          onClick={() => this.handleNavigation('previous', selectedID)}><FontAwesome name="chevron-circle-left" /></Button>
+          onClick={() => this.handleNavigation('previous', selectedID)}>
+          <FontAwesome name="chevron-circle-left" /></Button>
         <Button bsStyle='default' disabled><FontAwesome name="pencil-square-o" /></Button>
-        <Button bsStyle='default' onClick={this.getRandom}><FontAwesome name="random" /></Button>
-        <Button bsStyle='default' disabled={(selectedID === thoLength - 1) ? true : false}
-            onClick={() => this.handleNavigation('next', selectedID)}><FontAwesome name="chevron-circle-right" /></Button>
+        <Button bsStyle='default' onClick={this.getRandom} disabled={!this.props.getRandom}>
+          <FontAwesome name="random" /></Button>
+        <Button bsStyle='default' disabled={(selectedID === tho.length - 1) ? true : false}
+            onClick={() => this.handleNavigation('next', selectedID)}>
+            <FontAwesome name="chevron-circle-right" /></Button>
       </ButtonGroup>
-    );
 
+    );
     return (
+      (this.props.busy) ?
+      <BusyLoading message='Loading index...' /> :
       <div>
-        <ListGroup>{ IndexList }</ListGroup>
+        <ListThoWithPage listThos={tho} {...this.props}/>
         <Toolbar />
       </div>
     );
@@ -136,4 +148,4 @@ ThoIndex.propTypes = {
   indexOnClick: PropTypes.func
 }
 
-export default connectAlgolia(ThoIndex);
+export default ThoIndex;

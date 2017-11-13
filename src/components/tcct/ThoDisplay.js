@@ -32,13 +32,15 @@ const EachThoDisplay = ({eachTho}) => {
       </div>
     </div>
   )
+
 };
 
 class ThoDisplay extends Component {
   constructor(props){
     super(props);
     this.handleIndexSelect = this.handleIndexSelect.bind(this);
-    this.state = {selectedID: 0};
+    this.returnThoByIndex = this.returnThoByIndex.bind(this);
+    this.state = {selectedID: 0, selectedIndex: 1};
   }
 
   componentDidMount(){
@@ -49,11 +51,17 @@ class ThoDisplay extends Component {
     const selectedID = this.props.tho.reduce((returnID, currentTho, currentID) => {
       return (currentTho.index === selectedIndex) ? currentID : returnID;
     }, 0);
-    this.setState({selectedID, selectedIndex});
+    this.setState({selectedID});
+  }
+
+  returnThoByIndex(index){
+    const { tho } = this.props;
+    return  tho.reduce((returnTho, currentTho) => {
+      return (currentTho.index === index) ? currentTho : returnTho
+    }, null);
   }
 
   render(){
-
     const Jumbo = (props) => {
       return (
           <Jumbotron className="text-center" {...props}>
@@ -62,45 +70,39 @@ class ThoDisplay extends Component {
           </Jumbotron>
       )
     }
+    const { tho } = this.props;
+    //[] TODO: sort tho at api level
+    const sortedTho = tho.sort((tho1, tho2) => tho1.index - tho2.index);
 
-    if (this.props.busy) {
-      return (
-        // TODO better way to handle busy
-        <BusyLoading />
-      )
-    } else {
-      // NOTE: why thos[rndNumber] is not available here
-      const { tho } = this.props;
-      const sortedTho = tho.sort((tho1, tho2) => tho1.index > tho2.index);
-      // const ThoList = sortedTho.map((eachTho) => {
-      //   return <EachThoDisplay eachTho={eachTho} />
-      // });
+    return (this.props.busy) ?
+      <BusyLoading message='Tải thơ...'/> :
+      <div className="container">
+        <Jumbo />
+        <Grid>
+          <Row className="show-grid">
+            <Col xsHidden smHidden md={4} mdOffset={2}>
+              <ThoIndex
+                tho={sortedTho}
+                // indexOnClick={ (selectedID, selectedIndex) => this.handleIndexSelect(selectedIndex) }
+                indexOnClick = { (selectedID, selectedIndex) => this.setState({selectedID, selectedIndex})}
+                getRandom = { selectedID => this.setState({selectedID}) }
+                handleNavigation = { selectedID => this.setState({selectedID}) }
+              >
 
-      return (
-        <div className="container">
-          <Jumbo />
-          <Grid>
-            <Row className="show-grid">
-              <Col xsHidden smHidden md={4} mdOffset={2}>
-                <ThoIndex
-                  tho={this.props.tho} selectedID={this.state.selectedID}
-                  indexOnClick={ (selectedID) => this.setState({selectedID}) }
-                  getRandom = { selectedID => this.setState({selectedID}) }
-                  handleNavigation = { selectedID => this.setState({selectedID}) }
-                />
-                {/* <Toolbar /> */}
-              </Col>
-              <Col xs={12} sm={4}>
-                {(sortedTho[this.state.selectedID]) ? <EachThoDisplay eachTho={sortedTho[this.state.selectedID]} /> : ''}
-                {/* {ThoList[this.state.selectedID]} */}
-                <Button onClick={() => console.log('Show index')}><FontAwesome name="search" /> Mục lục</Button>
-              </Col>
-            </Row>
-          </Grid>
-        </div>
-      );
+              </ThoIndex>
+              {/* <Toolbar /> */}
+            </Col>
+            <Col xs={12} sm={4}>
+              {/* {(sortedTho[this.state.selectedID]) ? <EachThoDisplay eachTho={sortedTho[this.state.selectedID]} /> : ''} */}
+              {(this.returnThoByIndex(this.state.selectedIndex)) ?
+                <EachThoDisplay eachTho={this.returnThoByIndex(this.state.selectedIndex)} /> :
+                <div></div>}
 
-    }
+              <Button onClick={() => console.log('Show index')}><FontAwesome name="search" /> Mục lục</Button>
+            </Col>
+          </Row>
+        </Grid>
+      </div>
   }
 }
 
