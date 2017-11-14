@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 
-import { Navbar, Nav, NavItem, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, Image, Thumbnail } from 'react-bootstrap';
 
 import { tcctMenuItems } from '../data/tcct';
 import { getUserInfo } from '../actions/userActions';
@@ -16,15 +16,17 @@ class Menu extends Component {
     return (
       <div className="container">
         <Navbar inverse collapseOnSelect fluid>
-          <Navbar.Header>
-            <Navbar.Brand><a href="/">Kim Bong Mieu</a></Navbar.Brand>
+          {/* <Navbar.Header>
+            <Navbar.Brand><a href="/">KNM-TQD</a></Navbar.Brand>
             <Navbar.Toggle />
-          </Navbar.Header>
+          </Navbar.Header> */}
+          <Navbar.Toggle />
+          <Nav pullLeft navbar><Image rounded responsive style={{marginLeft: '10px', height: '40px'}} src="https://i.imgur.com/K3iH2Bk.png" alt="Kim Bong Mieu"/></Nav>
           <Navbar.Collapse>
             <Nav>
-              <NavDropdown eventKey={2} title="Chi tiết" id="tcct">
-                {tcctMenuItems}
-              </NavDropdown>
+              {tcctMenuItems}
+              {/* <NavDropdown eventKey={2} title="Chi tiết" id="tcct">
+              </NavDropdown> */}
             </Nav>
             <Nav pullRight>
               {this.props.userEmail ?

@@ -8,15 +8,15 @@ import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import renderHTML from 'react-render-html';
-import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup,
+import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup, Panel,
   ListGroupItem, Jumbotron, Clearfix, Button, Image, Thumbnail } from 'react-bootstrap';
-import FontAwesome  from 'react-fontawesome';
+import FontAwesome from 'react-fontawesome';
 
 const Jumbo = ({props}) =>
   <Jumbotron className="text-center" {...props}>
     <h2>Theo cánh chim trời</h2>
     <p>Dành tặng cố tác giả Kim Bồng Miêu<br/>
-       Tuyển tập các bài thơ đã đăng của tác giả<br/>
+       Tuyển tập các bài thơ đã đăng...<br/>
     </p>
   </Jumbotron>
 const DisplayUnitTho = ({tho}) => {
@@ -48,6 +48,30 @@ const DisplayUnitTho = ({tho}) => {
 };
 
 class DisplayTho extends Component {
+  // constructor(props){
+  //   super(props);
+  //   this.state = {floatStyle: {}};
+  //   this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  // }
+  //
+  // componentDidMount(){
+  //   this.updateWindowDimensions();
+  //   window.addEventListener('resize', this.updateWindowDimensions);
+  // }
+  //
+  // componentWillUnMount(){
+  //   window.removeEventListener('resize', this.updateWindowDimensions);
+  // }
+  //
+  // updateWindowDimensions(){
+  //   this.setState({
+  //     floatStyle: {
+  //       position: 'fixed',
+  //       left: window.innerHeight * 0.95 + 'px',
+  //       top: window.innerWidth * 0.95 + 'px'
+  //     }
+  //   }, () => console.log(this.state));
+  // }
   render() {
     const ConnectedHighlight = connectHighlight(
       ({ highlight, attributeName, hit, highlightProperty }) => {
@@ -66,7 +90,7 @@ class DisplayTho extends Component {
     class CustomizedHits extends Component {
       constructor(props){
         super(props);
-        this.state = {selectID: 0}
+        this.state = {selectID: 0, xsMenuShow: false};
       }
 
       render(){
@@ -75,44 +99,40 @@ class DisplayTho extends Component {
           <ListGroupItem
             active={selectID === this.state.selectID}
             key={hit.objectID}
-            onClick={() => this.setState({selectID})}
+            onClick={() => this.setState({selectID, xsMenuShow: false})}
           >
           {`${hit.index}. `} <ConnectedHighlight attributeName="title" hit={hit} />
           </ListGroupItem>
         );
-        const IndexMenu =
-          <Col xsHidden md={4} mdOffset={1} sm={5}>
+        const IndexMenu = (xsInvisible) =>
+          <Col xsHidden={xsInvisible} md={4} mdOffset={1} sm={5}>
             <ConnectedSearchBox />
             <ListGroup>{ hitsList }</ListGroup>
             <ConnectedPagination/>
           </Col>
-        const floatBtnStyle = {
-          position: 'absolute',
-          bottom: '5%',
-          right: '10%'
-        }
+        const { floatStyle } = this.state;
 
         return (
           <div>
             <Row>
-              {IndexMenu}
+              {IndexMenu(true)}
               <Clearfix visibleXsBlock/>
-              <Col xs={12} md={6} sm={7}>
+              <Col xsHidden md={6} sm={7}>
                 {(hits[this.state.selectID]) ? <DisplayUnitTho tho={hits[this.state.selectID]} />: ''}
               </Col>
-              <Col xs={12} smHidden mdHidden>
-                <Button
-                  onClick={() => console.log('show IndexMenu')}><FontAwesome name="bars"
-                  style={floatBtnStyle}/></Button>
+              <Col xs={12} smHidden mdHidden lgHidden>
+                {IndexMenu(!this.state.xsMenuShow)}
+                {(!this.state.xsMenuShow && hits[this.state.selectID]) ? <DisplayUnitTho tho={hits[this.state.selectID]} />: ''}
+                <Button disabled={this.state.xsMenuShow}
+                  onClick={() => this.setState({xsMenuShow: true})}><FontAwesome name="bars" /></Button>
               </Col>
-              {/* <Clearfix visibleXsBlock/> */}
             </Row>
           </div>
         );
       }
     }
 
-    const ConnectedHits = connectHits(({hits}) => <CustomizedHits hits = {hits}/>);
+    const ConnectedHits = connectHits(({hits, ...props}) => <CustomizedHits hits = {hits} {...props}/>);
     const ConnectedLogo = connectPoweredBy(({url}) => {
       const algoliaLogoUrl = 'https://www.algolia.com/assets/svg/algolia-logo-31b6f5702e2052e72c46f19466ce2aae.svg';
       return(<a href={url}><Image responsive src={algoliaLogoUrl} /></a>);
@@ -128,12 +148,12 @@ class DisplayTho extends Component {
       )
     });
 
-    const CustomizedSearchBox = ({currentRefinment, refine}) => (
+    const CustomizedSearchBox = ({currentRefinement, refine}) => (
       <FormGroup>
         <InputGroup>
-          {/* <InputGroup.Addon><FontAwesome name="search" /></InputGroup.Addon> */}
-          <InputGroup.Addon><ConnectedLogo /></InputGroup.Addon>
-          <FormControl type="text" value={currentRefinment}
+          <InputGroup.Addon><FontAwesome name="search" /></InputGroup.Addon>
+          {/* <InputGroup.Addon><ConnectedLogo /></InputGroup.Addon> */}
+          <FormControl type="text" value={currentRefinement}
             onChange={(e) => refine(e.target.value)} placeholder="Tìm theo tên bài hoặc nội dung"/>
           <InputGroup.Addon><FontAwesome name="times-circle" onClick={() => refine('')}/></InputGroup.Addon>
           {/* <InputGroup.Button><ConnectedLogo /></InputGroup.Button> */}

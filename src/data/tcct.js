@@ -15,14 +15,14 @@ const tcctLinks = [
   {
     "id": 0,
     "path": "/tcct/xemtho",
-    "des": "Xem thơ mới",
+    "des": "Xem thơ",
     "component": DisplayTho,
     "menu": true
   },
   {
     "id": 1,
     "path": "/tcct/suatho",
-    "des": "Sửa thơ",
+    "des": "Thêm/Sửa thơ",
     "component": ThoEdit,
     "menu": true
   },
@@ -52,7 +52,7 @@ const tcctLinks = [
     "path": "/profile",
     "des": "Profile",
     "component": UserProfile,
-    "menu": true
+    "menu": false
   },
   {
     "id":6,
