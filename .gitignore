@@ -8,3 +8,4 @@ src/config/algolia.js
 .watchmanconfig
 .eslintignore
 .eslintrc.back
+public/favicon.ico.bak

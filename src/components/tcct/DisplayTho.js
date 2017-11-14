@@ -9,14 +9,15 @@ import algoliaConfig from '../../config/algolia';
 
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup,
-  ListGroupItem, Jumbotron, Clearfix, Button, Image } from 'react-bootstrap';
+  ListGroupItem, Jumbotron, Clearfix, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import BusyLoading from '../BusyLoading';
 
+const bgUrl_1 = 'https://i.imgur.com/zLOqr2h.jpg';
 const Jumbo = ({props}) =>
   <Jumbotron className="text-center" {...props}>
     <h2>Theo cánh chim trời</h2>
-    <p>Dành tặng cố tác giả Kim Bồng Miêu<br/>
+    <p>Dành tặng cố nhà thơ <strong>Kim Bồng Miêu</strong><br/>
        Tuyển tập các bài thơ đã đăng...<br/>
     </p>
   </Jumbotron>
@@ -39,7 +40,7 @@ const DisplayUnitTho = ({tho}) => {
   };
 
   return (
-    <div style={thoStyle.container}>
+    <div style={thoStyle.container} className="container-fluid">
       <div style={thoStyle.content}>
         {renderHTML(tho.content)}
       </div>

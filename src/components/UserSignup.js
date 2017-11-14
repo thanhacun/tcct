@@ -53,13 +53,13 @@ class UserSignup extends Component {
           </Form>
         <br />
         <h1>Social Signup</h1>
-        <SocialButton provider="facebook"
+        <SocialButton provider="facebook" disabled
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
           onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
           className="btn btn-primary"><span className="fa fa-facebook"></span> Facebook
         </SocialButton>
 
-        <SocialButton provider="google"
+        <SocialButton provider="google" disabled
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
           onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
           className="btn btn-danger"><span className="fa fa-google-plus"></span> Google

@@ -15,7 +15,6 @@ import store, { history } from './store';
 import tcctRoutes from './data/tcct';
 
 const app = document.getElementById('root');
-
 ReactDOM.render(
 <Provider store={store}>
   <ConnectedRouter history={history}>
