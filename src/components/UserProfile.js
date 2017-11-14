@@ -50,13 +50,13 @@ class UserProfile extends Component {
                   <strong>email</strong>: {this.props.facebook.email} <br/>
                   <strong>name</strong>: {this.props.facebook.name} <br/>
 
-                  <SocialButton provider="facebook"
+                  <SocialButton provider="facebook" disabled
                     onLoginSuccess={(response) => this.props.socialUnlink(response)}
                     //onLoginFailure
                     className="btn btn-danger"><span className="fa fa-facebook"></span> Unlink
                   </SocialButton>
                 </p>
-                : <SocialButton provider="facebook"
+                : <SocialButton provider="facebook" disabled
                   onLoginSuccess={(response, local_email) => this.props.socialConnect(response, this.props.local.email)}
                   // onLoginFailure={handleSocialLoginFailer}
                   className="btn btn-primary"><span className="fa fa-facebook"></span> Connect

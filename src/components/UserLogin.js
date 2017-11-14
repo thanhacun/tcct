@@ -50,12 +50,12 @@ class UserLogin extends Component {
       <div className="container">
         <Jumbotron className="text-center">
           <h2><span className="fa fa-sign-in"></span> Login or Register with:</h2>
-          <SocialButton provider="facebook"
+          <SocialButton provider="facebook" disabled
             onLoginSuccess={(response) => this.props.socialLogin(response)}
             onLoginFailure={(response) => this.loginFailure(response)}
             className="btn btn-primary"><span className="fa fa-facebook"></span> Facebook
           </SocialButton>
-          <SocialButton provider="google"
+          <SocialButton provider="google" disabled
             onLoginSuccess={(response) => this.props.socialLogin(response)}
             onLoginFailure={(response) => this.loginFailure(response)}
             className="btn btn-danger" ><span className="fa fa-google-plus"> Google</span>

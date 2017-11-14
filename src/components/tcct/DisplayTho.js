@@ -8,9 +8,10 @@ import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import renderHTML from 'react-render-html';
-import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup, Panel,
-  ListGroupItem, Jumbotron, Clearfix, Button, Image, Thumbnail } from 'react-bootstrap';
+import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup,
+  ListGroupItem, Jumbotron, Clearfix, Button, Image } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
+import BusyLoading from '../BusyLoading';
 
 const Jumbo = ({props}) =>
   <Jumbotron className="text-center" {...props}>
@@ -110,9 +111,9 @@ class DisplayTho extends Component {
             <ListGroup>{ hitsList }</ListGroup>
             <ConnectedPagination/>
           </Col>
-        const { floatStyle } = this.state;
+        //const { floatStyle } = this.state;
 
-        return (
+        return (hits.length) ?
           <div>
             <Row>
               {IndexMenu(true)}
@@ -122,21 +123,24 @@ class DisplayTho extends Component {
               </Col>
               <Col xs={12} smHidden mdHidden lgHidden>
                 {IndexMenu(!this.state.xsMenuShow)}
+                {(this.state.xsMenuShow) ?
+                  <div></div> :
+                  <Button style={{marginBottom: '10px'}} onClick={() => this.setState({xsMenuShow: true})}>
+                    <FontAwesome name="search" /> Mục lục</Button>
+                }
                 {(!this.state.xsMenuShow && hits[this.state.selectID]) ? <DisplayUnitTho tho={hits[this.state.selectID]} />: ''}
-                <Button disabled={this.state.xsMenuShow}
-                  onClick={() => this.setState({xsMenuShow: true})}><FontAwesome name="bars" /></Button>
               </Col>
             </Row>
-          </div>
-        );
+          </div> :
+          <BusyLoading />
       }
     }
 
     const ConnectedHits = connectHits(({hits, ...props}) => <CustomizedHits hits = {hits} {...props}/>);
-    const ConnectedLogo = connectPoweredBy(({url}) => {
-      const algoliaLogoUrl = 'https://www.algolia.com/assets/svg/algolia-logo-31b6f5702e2052e72c46f19466ce2aae.svg';
-      return(<a href={url}><Image responsive src={algoliaLogoUrl} /></a>);
-    });
+    // const ConnectedLogo = connectPoweredBy(({url}) => {
+    //   const algoliaLogoUrl = 'https://www.algolia.com/assets/svg/algolia-logo-31b6f5702e2052e72c46f19466ce2aae.svg';
+    //   return(<a href={url}><Image responsive src={algoliaLogoUrl} /></a>);
+    // });
     const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbPages }) => {
       return (
         <Pagination

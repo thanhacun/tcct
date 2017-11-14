@@ -21,7 +21,9 @@ class Menu extends Component {
             <Navbar.Toggle />
           </Navbar.Header> */}
           <Navbar.Toggle />
-          <Nav pullLeft navbar><Image rounded responsive style={{marginLeft: '10px', height: '40px'}} src="https://i.imgur.com/K3iH2Bk.png" alt="Kim Bong Mieu"/></Nav>
+          <Nav pullLeft navbar>
+            <a href="/"><Image rounded responsive style={{marginLeft: '5px', height: '40px'}}
+              src="https://i.imgur.com/K3iH2Bk.png" alt="Kim Bong Mieu"/></a></Nav>
           <Navbar.Collapse>
             <Nav>
               {tcctMenuItems}

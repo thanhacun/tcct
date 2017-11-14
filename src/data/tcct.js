@@ -38,7 +38,7 @@ const tcctLinks = [
     "path": "/login",
     "des": "Login",
     "component": UserLogin,
-    "menu": true
+    "menu": false
   },
   {
     "id":4,
