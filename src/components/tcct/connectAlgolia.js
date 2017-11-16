@@ -38,17 +38,17 @@ const connectAlgolia = (LocalIndex) => {
         )
       });
 
-      const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbPages }) => {
-        console.log(currentRefinement);
-        return (
-          <Pagination
-            prev next ellipsis maxButtons={5}
-            items={nbPages}
-            activePage={currentRefinement}
-            onSelect={(eventKey) => {refine(eventKey)}}
-          />
-        )
-      })
+      // const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbPages }) => {
+      //   console.log(currentRefinement);
+      //   return (
+      //     <Pagination
+      //       prev next ellipsis maxButtons={5}
+      //       items={nbPages}
+      //       activePage={currentRefinement}
+      //       onSelect={(eventKey) => {refine(eventKey)}}
+      //     />
+      //   )
+      // });
 
       const CustomizedSearchBox = ({currentRefinment, refine}) => (
         <FormGroup>

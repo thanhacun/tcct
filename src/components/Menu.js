@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 
-import { Navbar, Nav, NavItem, NavDropdown, Image } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Image } from 'react-bootstrap';
 
 import { tcctMenuItems } from '../data/tcct';
 import { getUserInfo } from '../actions/userActions';

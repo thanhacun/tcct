@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { ListGroup, ListGroupItem, ButtonGroup, Button, FormGroup,
-  FormControl, Pagination } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, ButtonGroup, Button, Pagination } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import BusyLoading from '../BusyLoading';
-import connectAlgolia from './connectAlgolia';
+//import connectAlgolia from './connectAlgolia';
 
-//[ ] TODO: handling pages
+//[X] TODO: handling pages
 //[X] TODO: sortting tho
 //[X] TODO: handling buttons group here
 //[X] TODO: handling instant search
@@ -67,7 +66,7 @@ class ListTho extends Component {
   }
 
   render(){
-    const {listThos, inPageID, inListID} = this.props;
+    const {listThos} = this.props;
     const {selectedID} = this.state;
     const activeStyle = {
       fontWeight: 'bold'

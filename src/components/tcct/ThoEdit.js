@@ -1,5 +1,5 @@
-// TODO: using recompose to handle busy loading
-// TODO: integrated richtext editor
+// [ ] TODO: using recompose to handle busy loading
+// [X] TODO: integrated richtext editor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -16,12 +16,10 @@ import { modifyTho, saveDraftTho, getTho } from '../../actions/tcctActions';
 class ThoEdit extends Component {
   constructor(props){
     super(props);
-
-    this.state = {index: '', title: '', content: '', footer: '', syncHTMLtoEditor: false};
+    this.state = {index: '', title: '', content: '', footer: '', imgUrl: '', syncHTMLtoEditor: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleIndexClick = this.handleIndexClick.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.resetForm = this.resetForm.bind(this);
   }
 
@@ -66,15 +64,11 @@ class ThoEdit extends Component {
   }
 
   resetForm(){
-    this.setState({index: '', title: '', content: '', footer: '', imgURl: '', syncHTMLtoEditor: true}, () => {
+    this.setState({index: '', title: '', content: '', footer: '', imgUrl: '', syncHTMLtoEditor: true}, () => {
       // turnoff syncHTMLtoEditor to make sure updateHTML2Editor happen only
       // one time during componentDidUpdate lifecycle
       this.setState({syncHTMLtoEditor: false})
     })
-  }
-
-  handleKeyPress(e){
-    console.log(e.target);
   }
 
   render(){
@@ -127,8 +121,7 @@ class ThoEdit extends Component {
                       onChange={(e) => this.handleChange(e, 'imgUrl')} ></FormControl>
                   </FormGroup>
                     <ButtonToolbar>
-                      <Button type="submit" bsStyle="warning"
-                        onKeyPress={(e) =>this.handleKeyPress(e)}>Thêm/Lưu</Button>
+                      <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
                       <Button bsStyle="danger"
                         onClick={() => this.props.modifyTho(this.state, 'delete')} >Xóa</Button>
                       <Button bsStyle="primary" type="reset" onClick={this.resetForm}>Reset</Button>
