@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { ListGroup, ListGroupItem, ButtonGroup, Button, Pagination } from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
-import BusyLoading from '../BusyLoading';
+import { ListGroup, ListGroupItem, Pagination } from 'react-bootstrap';
 //import connectAlgolia from './connectAlgolia';
 
 //[X] TODO: handling pages
@@ -111,29 +109,28 @@ class ThoIndex extends Component {
   }
 
   render(){
-    const { selectedID, tho } = this.props;
+    const { tho } = this.props;
     //const sortedTho = tho.sort((tho1, tho2) => tho1.index - tho2.index);
 
-    const Toolbar = () => (
-      <ButtonGroup>
-        <Button bsStyle='default' disabled={(selectedID === 0) ? true : false}
-          onClick={() => this.handleNavigation('previous', selectedID)}>
-          <FontAwesome name="chevron-circle-left" /></Button>
-        <Button bsStyle='default' disabled><FontAwesome name="pencil-square-o" /></Button>
-        <Button bsStyle='default' onClick={this.getRandom} disabled={!this.props.getRandom}>
-          <FontAwesome name="random" /></Button>
-        <Button bsStyle='default' disabled={(selectedID === tho.length - 1) ? true : false}
-            onClick={() => this.handleNavigation('next', selectedID)}>
-            <FontAwesome name="chevron-circle-right" /></Button>
-      </ButtonGroup>
-
-    );
+    // const Toolbar = () => (
+    //   <ButtonGroup>
+    //     <Button bsStyle='default' disabled={(selectedID === 0) ? true : false}
+    //       onClick={() => this.handleNavigation('previous', selectedID)}>
+    //       <FontAwesome name="chevron-circle-left" /></Button>
+    //     <Button bsStyle='default' disabled><FontAwesome name="pencil-square-o" /></Button>
+    //     <Button bsStyle='default' onClick={this.getRandom} disabled={!this.props.getRandom}>
+    //       <FontAwesome name="random" /></Button>
+    //     <Button bsStyle='default' disabled={(selectedID === tho.length - 1) ? true : false}
+    //         onClick={() => this.handleNavigation('next', selectedID)}>
+    //         <FontAwesome name="chevron-circle-right" /></Button>
+    //   </ButtonGroup>
+    //
+    // );
     return (
-      (this.props.busy) ?
-      <BusyLoading message='Loading index...' /> :
+
       <div>
         <ListThoWithPage listThos={tho} {...this.props}/>
-        <Toolbar />
+        {/* <Toolbar /> */}
       </div>
     );
   }

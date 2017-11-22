@@ -1,4 +1,12 @@
-const tcctInitialState = {tho: []};
+const tcctInitialState = {
+  tho: [],
+  busy: false,
+  thoIndex: {
+    selectedID: 0,
+    isShowed: false,
+    defaultPerPage: 12,
+    perPageItems: [{value: 1}]
+  }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
   const { type, payload } = action;
@@ -32,9 +40,10 @@ const tcct = (state=tcctInitialState, action, userData) => {
     case 'GET_THO_REJECTED':
       return { ...state, busy: false };
 
+    case 'SELECT_HIT':
+      return { ...state, thoIndex: {...state.thoIndex, selectedID: payload}}
     default:
       return { ...state, user: userData };
-
   }
 }
 

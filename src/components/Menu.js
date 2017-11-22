@@ -22,7 +22,7 @@ class Menu extends Component {
           </Navbar.Header> */}
           <Navbar.Toggle />
           <Nav pullLeft navbar>
-            <a href="/"><Image rounded responsive style={{marginLeft: '5px', height: '40px'}}
+            <a href="/tcct/xemtho/0"><Image rounded responsive style={{marginLeft: '5px', height: '40px'}}
               src="https://i.imgur.com/K3iH2Bk.png" alt="Kim Bong Mieu"/></a></Nav>
           <Navbar.Collapse>
             <Nav>

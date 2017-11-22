@@ -2,11 +2,14 @@
 // [X] TODO: integrated richtext editor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { branch } from 'recompose';
+
 import { push } from 'react-router-redux';
 import { Form, FormGroup, ControlLabel, Jumbotron, Row, Col, FormControl,
   Button, ButtonToolbar} from 'react-bootstrap';
 import RichTextEditor from '../RichTextEditor';
-import BusyLoading from '../BusyLoading';
+//import BusyLoading from '../BusyLoading';
+import busyLoading from '../busyLoading';
 
 import ThoIndex from './ThoIndex';
 import { modifyTho, saveDraftTho, getTho } from '../../actions/tcctActions';
@@ -72,68 +75,71 @@ class ThoEdit extends Component {
   }
 
   render(){
-    if (this.props.tho.busy){
-      return(
-        <BusyLoading />
-      )
-    } else {
-      return (
-      <div className="container">
-        <Jumbotron className="text-center">
-          <h2>TCCT - Kim Bồng Miêu</h2>
-          <p>Nhập, sửa các bài thơ</p>
-          <code>Khi sửa, chỉ nên sửa ở giao diện máy tính</code>
-        </Jumbotron>
-        {/* recompose branch here to show busy loading or content */}
-        {/* recompose branch to show new form or edit form */}
-
-        <Row>
-          <Col md={4}><ThoIndex
-            tho={this.props.tho}
-            indexOnClick={(selectedID, selectedIndex) => this.handleIndexClick(selectedIndex)} /></Col>
-          <Col md={8}>
-            <h2>Nhập liệu</h2>
-            <Form onSubmit={this.handleSubmit}>
+    const Edit = () => (
+      <Row>
+        <Col md={4}><ThoIndex
+          tho={this.props.tho}
+          indexOnClick={(selectedID, selectedIndex) => this.handleIndexClick(selectedIndex)} /></Col>
+        <Col md={8}>
+          <h2>Nhập liệu</h2>
+          <Form onSubmit={this.handleSubmit}>
+            <FormGroup>
+              <ControlLabel>STT</ControlLabel>
+              <FormControl type="number" value={this.state.index} placeholder={this.props.tho.length + 1}
+                onChange={(e) => this.handleChange(e, 'index')} required></FormControl>
+              </FormGroup>
               <FormGroup>
-                <ControlLabel>STT</ControlLabel>
-                <FormControl type="number" value={this.state.index} placeholder={this.props.tho.length + 1}
-                  onChange={(e) => this.handleChange(e, 'index')} required></FormControl>
+                <ControlLabel>Tiêu đề</ControlLabel>
+                <FormControl type="text" value={this.state.title}
+                  onChange={(e) => this.handleChange(e, 'title')} required></FormControl>
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel>Tiêu đề</ControlLabel>
-                  <FormControl type="text" value={this.state.title}
-                    onChange={(e) => this.handleChange(e, 'title')} required></FormControl>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>Nội dung</ControlLabel>
-                    <RichTextEditor label="Code HTML tự sinh"
-                      updateRawHTML={(rawHTML) => this.handleUpdateRawHTML(rawHTML)}
-                      value={this.state.content} syncHTMLtoEditor={this.state.syncHTMLtoEditor}/>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>Ghi chú</ControlLabel>
-                    <FormControl type="text" value={this.state.footer}
-                      onChange={(e) => this.handleChange(e, 'footer')} ></FormControl>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>Hình minh họa</ControlLabel>
-                    <FormControl type="text" value={this.state.imgUrl}
-                      onChange={(e) => this.handleChange(e, 'imgUrl')} ></FormControl>
-                  </FormGroup>
-                    <ButtonToolbar>
-                      <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
-                      <Button bsStyle="danger"
-                        onClick={() => this.props.modifyTho(this.state, 'delete')} >Xóa</Button>
-                      <Button bsStyle="primary" type="reset" onClick={this.resetForm}>Reset</Button>
+                  <ControlLabel>Nội dung</ControlLabel>
+                  <RichTextEditor label="Code HTML tự sinh"
+                    updateRawHTML={(rawHTML) => this.handleUpdateRawHTML(rawHTML)}
+                    value={this.state.content} syncHTMLtoEditor={this.state.syncHTMLtoEditor}/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Ghi chú</ControlLabel>
+                  <FormControl type="text" value={this.state.footer}
+                    onChange={(e) => this.handleChange(e, 'footer')} ></FormControl>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Hình minh họa</ControlLabel>
+                  <FormControl type="text" value={this.state.imgUrl}
+                    onChange={(e) => this.handleChange(e, 'imgUrl')} ></FormControl>
+                </FormGroup>
+                  <ButtonToolbar>
+                    <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
+                    <Button bsStyle="danger"
+                      onClick={() => this.props.modifyTho(this.state, 'delete')} >Xóa</Button>
+                    <Button bsStyle="primary" type="reset" onClick={this.resetForm}>Reset</Button>
 
-                    </ButtonToolbar>
-                  </Form>
-          </Col>
-          <Col md={8} mdOffset={4}></Col>
-        </Row>
-      </div>
-    )
-    }
+                  </ButtonToolbar>
+                </Form>
+        </Col>
+        <Col md={8} mdOffset={4}></Col>
+      </Row>
+    );
+    const WithBusyLoadingEdit = branch(
+      props => {
+        console.log(props);
+        return props.busy;
+      },
+      busyLoading
+    )(Edit);
+
+    return (
+    <div className="container">
+      <Jumbotron className="text-center">
+        <h2>TCCT - Kim Bồng Miêu</h2>
+        <p>Nhập, sửa các bài thơ</p>
+        <code>Khi sửa, chỉ nên sửa ở giao diện máy tính</code>
+      </Jumbotron>
+      <WithBusyLoadingEdit {...this.props}/>
+
+    </div>
+  )
   }
 }
 
@@ -143,6 +149,6 @@ const mapDispatchToProps = dispatch => ({
   saveDraftTho: (newTho) => dispatch(saveDraftTho(newTho)),
   goTo: (path) => dispatch(push(path)),
   getTho: () => dispatch(getTho())
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ThoEdit);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 // import { branch } from 'recompose';
 import { getTho } from '../../actions/tcctActions';
 import ThoIndex from './ThoIndex';
-import BusyLoading from '../BusyLoading';
+//import BusyLoading from '../BusyLoading';
 
 import { Jumbotron, Grid, Row, Col, Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -73,9 +73,7 @@ class ThoDisplay extends Component {
     const { tho } = this.props;
     //[] TODO: sort tho at api level
     const sortedTho = tho.sort((tho1, tho2) => tho1.index - tho2.index);
-
-    return (this.props.busy) ?
-      <BusyLoading message='Tải thơ...'/> :
+    return (
       <div className="container">
         <Jumbo />
         <Grid>
@@ -103,6 +101,7 @@ class ThoDisplay extends Component {
           </Row>
         </Grid>
       </div>
+    )
   }
 }
 

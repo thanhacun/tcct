@@ -20,3 +20,10 @@ export function getTho(){
     payload: axios.get('/api/tcct/tho')
   }
 };
+
+export function selectHit(selectedID) {
+  return {
+    type: 'SELECT_HIT',
+    payload: selectedID
+  }
+}

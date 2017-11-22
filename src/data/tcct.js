@@ -15,6 +15,7 @@ const tcctLinks = [
   {
     "id": 0,
     "path": "/tcct/xemtho",
+    "subPath": "index",
     "des": "Xem thơ",
     "component": DisplayTho,
     "menu": true
@@ -67,7 +68,7 @@ const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
 const tcctMenuItems = sortedMenu.map((item, key) => {
   if (item.menu) {
     return (
-      <LinkContainer to={item.path} key={`tcct_${item.id}`}>
+      <LinkContainer to={(item.subPath) ? `${item.path}/0`: item.path} key={`tcct_${item.id}`}>
         <MenuItem key={`key_${key}`} eventKey={`${key}.${item.id}`}>{item.des}</MenuItem>
       </LinkContainer>
     )
@@ -78,7 +79,7 @@ const tcctMenuItems = sortedMenu.map((item, key) => {
 
 const tcctRoutes = tcctLinks.map((app) => {
   return (
-    <Route path={app.path} component={app.component} key={`tcct_${app.id}`} />
+    <Route path={(app.subPath) ? `${app.path}/:${app.subPath}` : app.path} component={app.component} key={`tcct_${app.id}`} />
   );
 });
 
