@@ -21,9 +21,9 @@ export function getTho(){
   }
 };
 
-export function selectHit(selectedID) {
+export function selectHit(selectedID, selectedIndex) {
   return {
     type: 'SELECT_HIT',
-    payload: selectedID
+    payload: {selectedID, selectedIndex}
   }
 }

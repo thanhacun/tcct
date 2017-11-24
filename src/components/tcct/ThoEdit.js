@@ -123,7 +123,6 @@ class ThoEdit extends Component {
     );
     const WithBusyLoadingEdit = branch(
       props => {
-        console.log(props);
         return props.busy;
       },
       busyLoading

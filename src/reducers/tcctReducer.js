@@ -2,10 +2,12 @@ const tcctInitialState = {
   tho: [],
   busy: false,
   thoIndex: {
-    selectedID: 0,
+    selectedIndex: 1,
+    selectedID: null,
     isShowed: false,
     defaultPerPage: 12,
-    perPageItems: [{value: 1}]
+    perPageItems: [{value: 1}],
+    thoToPrint: null
   }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
@@ -41,7 +43,7 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, busy: false };
 
     case 'SELECT_HIT':
-      return { ...state, thoIndex: {...state.thoIndex, selectedID: payload}}
+      return { ...state, thoIndex: {...state.thoIndex, ...payload}}
     default:
       return { ...state, user: userData };
   }

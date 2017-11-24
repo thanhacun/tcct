@@ -7,18 +7,18 @@ import { connectSearchBox, connectHits, connectHighlight,
   connectPagination, connectHitsPerPage } from 'react-instantsearch/connectors'
 import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
-import { branch, renderNothing, compose, withState, withHandlers } from 'recompose';
+import { branch, compose, withState, withHandlers} from 'recompose';
 import { connect } from 'react-redux';
 
 import renderHTML from 'react-render-html';
-import { Pagination, FormGroup, FormControl, ListGroup, Row, Col, InputGroup,
-  ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup } from 'react-bootstrap';
+import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
+  ListGroupItem, Jumbotron, Clearfix, Button } from 'react-bootstrap';
 
 import MediaQuery from 'react-responsive';
 import FontAwesome from 'react-fontawesome';
 import busyLoading from '../busyLoading';
 
-import {selectHit} from '../../actions/tcctActions';
+import {selectHit, getTho} from '../../actions/tcctActions';
 
 //const bgUrl_1 = 'https://i.imgur.com/zLOqr2h.jpg';
 const Jumbo = ({props}) =>
@@ -46,31 +46,39 @@ const DisplayUnitTho = ({tho}) => {
       minHeight: '500px'
     }
   };
-
   return (tho) ?
     <div style={thoStyle.container} className="container-fluid">
       <div style={thoStyle.content}>
         {/* Showing highlighted content for searching */}
+        {/* {(tho.objectID) ? <ConnectedHighlight attributeName="content" hit={tho} /> : renderHTML(tho.content)} */}
+        <Default>
+          <Button bsStyle="default" href={`/tcct/print/${tho.index}`}><FontAwesome name="print" /></Button>
+        </Default>
         <ConnectedHighlight attributeName="content" hit={tho} />
-        {/* {renderHTML(tho.content)} */}
       </div>
     </div> :
     <div></div>
 };
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
-  const { isMobile, toggle, showList } = props;
+  const { isMobile, toggle, showList, searchFocus, hitsNumber } = props;
   const placeholder = (isMobile) ? "Đánh từ bất kỳ..." : "Tìm theo tên bài hoặc nội dung...";
   const searchPrefix = (isMobile) ?
-    <InputGroup.Button><Button onClick={toggle}><FontAwesome name={(showList) ? "times": "plus"} /></Button></InputGroup.Button> :
+    <InputGroup.Button><Button onClick={toggle} disabled={hitsNumber===1}>
+      <FontAwesome name={(showList) ? "chevron-up": "chevron-down"} /></Button>
+    </InputGroup.Button> :
     <InputGroup.Addon><FontAwesome name="search" /></InputGroup.Addon>
   return (
     <FormGroup>
       <InputGroup>
         {searchPrefix}
         <FormControl type="text" value={currentRefinement}
-          onChange={(e) => refine(e.target.value)} placeholder={placeholder} onFocus={(isMobile) ? toggle : null}/>
-          <InputGroup.Button><Button onClick={() => refine()}><FontAwesome name="times-circle" /></Button></InputGroup.Button>
+          onChange={(e) => refine(e.target.value)} placeholder={placeholder}
+          onFocus={(isMobile) ? searchFocus : null}/>
+          <InputGroup.Button>
+            <Button onClick={() => refine()} disabled={!currentRefinement}>
+              <FontAwesome name="times-circle" /></Button>
+          </InputGroup.Button>
         </InputGroup>
       </FormGroup>
   );
@@ -119,13 +127,12 @@ const ConnectedHighlight = connectHighlight(
 });
 
 const HitsList = ({hits, selectedID, ...props}) => {
-  //[X] TODO: hide if having only record
   const { showList } = props;
   const hitsList = hits.map((hit, index) =>
     <ListGroupItem
       key={hit.objectID}
       active={index === selectedID}
-      onClick={() => props.hitClick(index)}
+      onClick={() => props.hitClick(index, hit.index)}
     >
     {`${hit.index}. `} <ConnectedHighlight attributeName="title" hit={hit} />
     </ListGroupItem>
@@ -137,17 +144,25 @@ const Mobile = props => <MediaQuery { ...props } maxWidth={767} />;
 const Default = props => <MediaQuery { ...props } minWidth={768} />;
 
 const CustomizedHits = ({hits, ...props}) => {
-  const { defaultPerPage, perPageItems, selectedID, hitClick, isMobile, showList, toggle, selectHit } = props;
+  const { defaultPerPage, perPageItems, hitClick, isMobile, showList,
+    toggle, selectHit, searchFocus, selectedIndex } = props;
+  // show only if there is more than 1 hit
   const shouldShow = (hits.length > 1) && (!isMobile || showList);
+  const currentPage = Math.ceil(selectedIndex / defaultPerPage);
+  // [X] TODO: Taking care of id when searching - number of hits return not in sequence!
+  const currentID = (props.selectedID === null) ? (selectedIndex - 1) % defaultPerPage : props.selectedID;
+  // reset selectedID to 0 if it is greater than the number of hits so there is always a hit to be shown
+  const selectedID = (currentID >= hits.length) ? 0 : currentID;
   return (
     <div>
         <div>
-          <Col sm={4}>
-            <ConnectedSearchBox isMobile={isMobile} showList={shouldShow} toggle={toggle} />
+          <Col sm={4} >
+            <ConnectedSearchBox isMobile={isMobile} showList={shouldShow} toggle={toggle}
+              searchFocus={searchFocus} hitsNumber={hits.length} />
             <HitsList hits={hits} selectedID={selectedID} showList={shouldShow}
-              hitClick={(selectedID) => hitClick(selectedID, selectHit)} />
+              hitClick={(selectedID, selectedIndex) => hitClick(selectedID, selectedIndex, selectHit)} />
             <ConnectedHitsPerPage defaultRefinement={defaultPerPage} items={perPageItems} />
-            <ConnectedPagination ellipsis maxButtons={5} showList={shouldShow} />
+            <ConnectedPagination ellipsis maxButtons={6} showList={shouldShow} defaultRefinement={currentPage}/>
           </Col>
           <Clearfix visibleXsBlock/>
           <Col sm={8}>
@@ -162,9 +177,12 @@ const showHitsState = compose(
   withState('showList', 'handleShowList', false),
   withHandlers({
     toggle: ({handleShowList}) => () => handleShowList((current) => !current),
-    hitClick: ({handleShowList}) => (selectedID, selectHit) => {
+    searchFocus: ({handleShowList}) => () => {
+      handleShowList(true);
+    },
+    hitClick: ({handleShowList}) => (selectedID, selectedIndex, selectHit) => {
       handleShowList(false);
-      selectHit(selectedID);
+      selectHit(selectedID, selectedIndex);
     }
   })
 )
@@ -183,23 +201,23 @@ const ConnectedHits = connectHits(({hits, selectedID, ...props}) =>
 );
 
 const DisplayTho = (props) => {
-  const selectedID = (props.selectedID !== Number(props.match.params.index)) ? props.match.params.index : props.selectedID;
-  const { defaultPerPage, perPageItems, isShowed } = props;
+  const selectedIndex = Number(props.match.params.index);
+  const { defaultPerPage, perPageItems, isShowed, selectedID } = props.thoIndex;
   return (
     <div className="container">
       <Jumbo />
       <InstantSearch { ...algoliaConfig } >
-        {/* props: isMobile, hitsPerPage, perPageItems, thoIndex  */}
+        {/* props: isMobile, hitsPerPage, perPageItems, currentPage selectedID selectedIndex*/}
         <Mobile>
-          <ConnectedHits isMobile defaultPerPage={defaultPerPage}
-            perPageItems={perPageItems} selectedID={selectedID} isShowed={isShowed}
-            selectHit={(selectedID) => props.selectHit(selectedID)}
+          <ConnectedHits isMobile defaultPerPage={defaultPerPage} perPageItems={perPageItems}
+            isShowed={isShowed} selectedIndex={selectedIndex} selectedID={selectedID}
+            selectHit={(selectedID, selectedIndex) => props.selectHit(selectedID, selectedIndex)}
           />
         </Mobile>
         <Default>
-          <ConnectedHits defaultPerPage={defaultPerPage}
-            perPageItems={perPageItems} isShowed={isShowed} selectedID={selectedID}
-            selectHit={(selectedID) => props.selectHit(selectedID)}
+          <ConnectedHits defaultPerPage={defaultPerPage} perPageItems={perPageItems}
+            isShowed={isShowed} selectedIndex={selectedIndex} selectedID={selectedID}
+            selectHit={(selectedID, selectedIndex) => props.selectHit(selectedID, selectedIndex)}
           />
         </Default>
       </InstantSearch>
@@ -207,12 +225,22 @@ const DisplayTho = (props) => {
   );
 };
 
-const mapStateToProps = store => store.tcct.thoIndex;
+const mapStateToProps = store => store.tcct;
 const mapDispatchToProps = dispatch => ({
-  selectHit: (selectedID) => {
-    dispatch(selectHit(selectedID));
-    dispatch(push(`/tcct/xemtho/${selectedID}`));
+  getTho: () => dispatch(getTho()),
+  selectHit: (selectedID, selectedIndex) => {
+    dispatch(selectHit(selectedID, selectedIndex));
+    dispatch(push(`/tcct/xemtho/${selectedIndex}`));
   },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayTho);
+// get local Tho data to support routing with index or title
+// export default compose(
+//   connect(mapStateToProps, mapDispatchToProps),
+//   lifecycle({
+//     componentDidMount(){
+//       this.props.getTho();
+//     }
+//   })
+// )(DisplayTho)

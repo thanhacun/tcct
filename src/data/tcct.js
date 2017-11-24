@@ -68,7 +68,7 @@ const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
 const tcctMenuItems = sortedMenu.map((item, key) => {
   if (item.menu) {
     return (
-      <LinkContainer to={(item.subPath) ? `${item.path}/0`: item.path} key={`tcct_${item.id}`}>
+      <LinkContainer to={(item.subPath) ? `${item.path}/1`: item.path} key={`tcct_${item.id}`}>
         <MenuItem key={`key_${key}`} eventKey={`${key}.${item.id}`}>{item.des}</MenuItem>
       </LinkContainer>
     )
