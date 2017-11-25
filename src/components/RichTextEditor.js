@@ -1,97 +1,60 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { compose, withState, withHandlers, lifecycle } from 'recompose';
 // REACT-DRAFT-WYSIWYG ============
-  import { Editor } from 'react-draft-wysiwyg';
+import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './richtextEditor.css';
-
-// MEDIUM-DRAFT ===================
-//import { Editor, createEditorState } from 'medium-draft';
-//import 'medium-draft/lib/index.css';
 
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 
-class RichTextEditor extends Component {
-  constructor(props){
-    super(props);
-    this.state = {editorState: EditorState.createEmpty()};
-    this.onEditorStateChange = this.onEditorStateChange.bind(this);
-    this.updateHTML2Editor = this.updateHTML2Editor.bind(this);
-  }
+const RichTextEditor = props => {
+  const { editorState, onEditorStateChange, label, value } = props;
+  return (
+    <div>
+      <Editor
+        editorState={editorState}
+        toolbarClassName="toolbarClassName"
+        wrapperClassName="wrapperClassName"
+        editorClassName="editorClassName"
+        onEditorStateChange={onEditorStateChange}
+      />
+      <FormGroup>
+        <ControlLabel>{label}</ControlLabel>
+        <FormControl value={value} disabled/>
+      </FormGroup>
+    </div>
+  );
+};
 
-  componentWillUpdate(){
-    if (this.props.syncHTMLtoEditor){
-      this.updateHTML2Editor()
+const enhanceEditor = compose(
+  withState('editorState', 'updateValue', EditorState.createEmpty()),
+  // withState('value', 'updateHTML', ''),
+  withHandlers({
+    onEditorStateChange: ({updateValue, ...props}) => (editorState) => {
+      const rawHTML = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+      props.updateRawHTML(rawHTML);
+      updateValue(editorState);
+      // updateHTML(rawHTML);
+    },
+    updateHTML2Editor: ({updateValue, ...props}) => (editorState) => {
+      const contentBlock = htmlToDraft(props.value);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+        const editorState = EditorState.createWithContent(contentState);
+        updateValue(editorState);
+      }
     }
-  }
-
-  updateHTML2Editor(){
-    const contentBlock = htmlToDraft(this.props.value);
-    if (contentBlock) {
-      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-      const editorState = EditorState.createWithContent(contentState);
-      this.setState({editorState});
+  }),
+  lifecycle({
+    componentWillUpdate(){
+      if(this.props.syncHTMLtoEditor){
+        this.props.updateHTML2Editor();
+      }
     }
-  }
+  })
+);
 
-  onEditorStateChange(editorState){
-    const rawHTML = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-    this.props.updateRawHTML(rawHTML);
-    this.setState({editorState});
-  }
-
-  render(){
-    const { editorState } = this.state;
-    return (
-      <div>
-        <Editor
-          editorState={editorState}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          onEditorStateChange={this.onEditorStateChange}
-        />
-        <FormGroup>
-          <ControlLabel>{this.props.label}</ControlLabel>
-          <FormControl value={this.props.value} disabled/>
-        </FormGroup>
-      </div>
-    )
-  }
-}
-
-// class RichTextEditor extends Component {
-//   constructor(props){
-//     super(props);
-//     this.state = {editorState: createEditorState(), rawHTML: ''};
-//     this.onChange = this.onChange.bind(this);
-//   }
-//
-//   onChange(editorState){
-//     this.setState({
-//       editorState,
-//       rawHTML: draftToHtml(convertToRaw(editorState.getCurrentContent()))
-//       //rawHTML: mediumDraftExporter(editorState.getCurrentContent())
-//     });
-//   }
-//
-//   render(){
-//     const { editorState, rawHTML } = this.state;
-//     return (
-//       <div>
-//         <Editor
-//           ref="editor"
-//           editorState={editorState}
-//           onChange={this.onChange}
-//         />
-//         <ControlLabel>{this.props.label}</ControlLabel>
-//         <FormControl value={rawHTML} />
-//       </div>
-//
-//     )
-//   }
-// }
-
-export default RichTextEditor;
+export default enhanceEditor(RichTextEditor);
