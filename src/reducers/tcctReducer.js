@@ -1,13 +1,18 @@
+import { randomRange } from '../utils/common_tools';
+
 const tcctInitialState = {
   tho: [],
   busy: false,
   thoIndex: {
     selectedIndex: 1,
-    selectedID: null,
-    isShowed: false,
+    // selectedID: null,
+    hit: null,
+    // isShowed: false,
     defaultPerPage: 12,
     perPageItems: [{value: 1}],
-    thoToPrint: null
+    thoToPrint: null,
+    randomIndex: null,
+    currentSearch: ""
   }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
@@ -43,7 +48,16 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, busy: false };
 
     case 'SELECT_HIT':
-      return { ...state, thoIndex: {...state.thoIndex, ...payload}}
+    case 'PATH_TO_INDEX':
+      return { ...state, thoIndex: {...state.thoIndex, ...payload}};
+    case '@@router/LOCATION_CHANGE':
+      // [] TODO: when redirect from /, cannot get the redirect link
+      return { ...state, thoIndex: {...state.thoIndex,
+        // selectedIndex: (payload.pathname === "/") ?
+        //   randomRange(1, 65) :
+        //   Number(payload.pathname.split('/').slice(-1)[0])
+        selectedIndex: Number(payload.pathname.split('/').slice(-1)[0])
+      }}
     default:
       return { ...state, user: userData };
   }

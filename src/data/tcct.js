@@ -1,39 +1,42 @@
 import React from 'react';
+// import { compose, withState, withHandlers} from 'recompose';
+
 import { LinkContainer } from 'react-router-bootstrap';
-import { MenuItem } from 'react-bootstrap';
+import { Nav, NavItem } from 'react-bootstrap';
 import { Route } from 'react-router';
 
-import ThoEdit from '../components/tcct/ThoEdit';
-import ThoDisplay from '../components/tcct/ThoDisplay';
 import UserSignup from '../components/UserSignup';
 import UserLogin from '../components/UserLogin';
 import UserProfile from '../components/UserProfile';
 import UserConnect from '../components/UserConnect';
-import DisplayTho from '../components/tcct/DisplayTho';
+import ShowTho from '../components/tcct/ShowTho';
 
 const tcctLinks = [
   {
     "id": 0,
     "path": "/tcct/xemtho",
     "subPath": "index",
+    "startSubPath": 1,
     "des": "Xem thơ",
-    "component": DisplayTho,
+    "component": ShowTho,
     "menu": true
   },
   {
     "id": 1,
     "path": "/tcct/suatho",
+    "subPath": "index",
+    "startSubPath": 0,
     "des": "Thêm/Sửa thơ",
-    "component": ThoEdit,
+    "component": ShowTho,
     "menu": true
   },
-  {
-    "id": 7,
-    "path": "/tcct/oldtho",
-    "des": "Xem thơ",
-    "component": ThoDisplay,
-    "menu": false
-  },
+  // {
+  //   "id": 2,
+  //   "path": "/tcct/suatho/0",
+  //   "des": "Thêm thơ",
+  //   "component": ShowTho,
+  //   "menu": true
+  // },
   {
     "id":3,
     "path": "/login",
@@ -61,27 +64,46 @@ const tcctLinks = [
     "des": "User Connect",
     "component": UserConnect,
     "menu": false
-  }
+  },
 ];
 
 const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
-const tcctMenuItems = sortedMenu.map((item, key) => {
-  if (item.menu) {
-    return (
-      <LinkContainer to={(item.subPath) ? `${item.path}/1`: item.path} key={`tcct_${item.id}`}>
-        <MenuItem key={`key_${key}`} eventKey={`${key}.${item.id}`}>{item.des}</MenuItem>
-      </LinkContainer>
-    )
-  } else {
-    return null;
-  }
-});
+
+// [] TODO: LinkContainer not working well with activeKey and eventKey from Nav and NavItem
+
+const TCCTMenu = () => {
+  return (
+    <Nav activeKey={`/tcct/xemtho`}>
+      {
+        sortedMenu.map((item, key) => {
+          return (item.menu) ?
+            <LinkContainer to={(item.subPath) ? `${item.path}/${item.startSubPath}`: item.path} key={`tcct_${item.id}`}
+            // active={(activeKey===item.path) ? true : false}
+            >
+              <NavItem key={`key_${key}`} eventKey={item.path} >{item.des}</NavItem>
+            </LinkContainer>
+          : null
+        })
+      }
+    </Nav>
+  )
+}
+
+// const EnhancedTCCTMenu = compose(
+//   withState('activeKey', 'updateActiveKey', '/tcct/xemtho'),
+//   withHandlers({
+//     selectKey: ({updateActiveKey}) => (selectedKey) => {
+//       updateActiveKey(selectedKey);
+//     }
+//   })
+// )(TCCTMenuItems);
 
 const tcctRoutes = tcctLinks.map((app) => {
   return (
-    <Route path={(app.subPath) ? `${app.path}/:${app.subPath}` : app.path} component={app.component} key={`tcct_${app.id}`} />
+    <Route path={(app.subPath) ? `${app.path}/:${app.subPath}` : app.path}
+    component={app.component} key={`tcct_${app.id}`} />
   );
 });
 
 export default tcctRoutes;
-export { tcctMenuItems };
+export { TCCTMenu };

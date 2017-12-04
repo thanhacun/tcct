@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 
-import { Navbar, Nav, NavItem, Image } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-import { tcctMenuItems } from '../data/tcct';
+import { TCCTMenu } from '../data/tcct';
 import { getUserInfo } from '../actions/userActions';
 
 class Menu extends Component {
@@ -13,30 +13,26 @@ class Menu extends Component {
   }
 
   render(){
+    const logoStyle = {
+      height: "50px",
+      marginTop: "-15px",
+      marginLeft: "-15px"
+    }
     return (
       <div className="container">
-        <Navbar inverse collapseOnSelect fluid>
+        <Navbar collapseOnSelect fluid fixedTop>
           <Navbar.Header>
-            <Navbar.Brand><a href="/">KBM-TQD</a></Navbar.Brand>
+            <Navbar.Brand><a href="/"><img src="https://i.imgur.com/K3iH2Bk.png" style={logoStyle} alt="Kim Bong Mieu"/></a></Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
-          {/* <Navbar.Toggle />
-          <Nav pullLeft navbar>
-            <a href="/"><Image rounded responsive style={{marginLeft: '5px', height: '40px'}}
-              src="https://i.imgur.com/K3iH2Bk.png" alt="Kim Bong Mieu"/></a></Nav> */}
           <Navbar.Collapse>
-            <Nav>
-              {tcctMenuItems}
-              {/* <NavDropdown eventKey={2} title="Chi tiết" id="tcct">
-              </NavDropdown> */}
-            </Nav>
+            <TCCTMenu />
             <Nav pullRight>
               {this.props.userEmail ?
                 <LinkContainer to="/profile"><NavItem eventKey={1}>{this.props.userEmail}</NavItem></LinkContainer> :
                 <LinkContainer to="/login"><NavItem eventKey={1}>Login</NavItem></LinkContainer>
               }
             </Nav>
-
           </Navbar.Collapse>
         </Navbar>
       </div>

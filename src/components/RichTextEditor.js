@@ -49,7 +49,7 @@ const enhanceEditor = compose(
     }
   }),
   lifecycle({
-    componentWillUpdate(){
+    componentDidMount(){
       if(this.props.syncHTMLtoEditor){
         this.props.updateHTML2Editor();
       }
