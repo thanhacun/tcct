@@ -23,8 +23,7 @@ ReactDOM.render(
   <ConnectedRouter history={history}>
     <div>
       <Menu />
-      {/* [] NOTE: there is a space after to prop */}
-      <Route exact path="/" key={`tcct_root`} render={() => <Redirect to="/tcct/xemtho/1" />} />
+      <Route exact path="/" key={`tcct_root`} render={() => <Redirect to="/tcct/xemtho/random" />} />
       <Route exact path="/tcct/print/:index" component={PrintTho} key={`tcct_print`} />
       {tcctRoutes}
     </div>

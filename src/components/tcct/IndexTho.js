@@ -1,15 +1,16 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
+
 /*=== ALGOLIA InstantSearch ===*/
 import { InstantSearch } from 'react-instantsearch/dom';
-import { connectSearchBox, connectHits, connectHighlight, connectScrollTo,
-  connectPagination, connectHitsPerPage } from 'react-instantsearch/connectors'
+import { connectSearchBox, connectHits, connectHighlight, connectPagination,
+  connectHitsPerPage } from 'react-instantsearch/connectors'
 import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
-  ListGroupItem, Jumbotron, Clearfix, Button } from 'react-bootstrap';
+  ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers } from 'recompose';
 import FontAwesome from 'react-fontawesome';
 
@@ -39,7 +40,7 @@ const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...prop
         <SearchPrefix mobile />
         <SearchPrefix />
         <FormControl type="text" value={currentRefinement}
-          onChange={(e) => refine(e.target.value)} placeholder={`Đánh từ bất kỳ...`}
+          onChange={(e) => refine(e.target.value)} placeholder={`Nhập từ bất kỳ...`}
           onFocus={searchFocus}
         />
           <InputGroup.Button>
@@ -61,7 +62,7 @@ ConnectedHitsPerPage.defaultProps = {
 }
 
 const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbPages, ...props }) => {
-  const { ellipsis, maxButtons, showList, currentPage } = props;
+  const { ellipsis, maxButtons, showList } = props;
   const ShowPagination = <Pagination ellipsis={ellipsis} maxButtons={maxButtons}
     prev next
     items={nbPages}
@@ -76,9 +77,6 @@ const ConnectedPagination = connectPagination( ({ refine, currentRefinement, nbP
   )
 });
 
-const ConnectedScrollTo = connectScrollTo(({ value, hasNotChanged, ...props }) => {
-  return <ConnectedPagination defaultRefinement={value} {...props}/>;
-});
 const ConnectedHighlight = connectHighlight(
   ({ highlight, attributeName, hit, highlightProperty }) => {
     const parseHit = highlight({
@@ -86,8 +84,7 @@ const ConnectedHighlight = connectHighlight(
       hit,
       highlightProperty: '_highlightResult'
     });
-    // do some customized tricks for highlighted content because the content data
-    // is html code
+    // customized trick for highlighted content because the data is html code
     let highlightedHits = null;
     if (attributeName === "content") {
       highlightedHits = renderHTML(
@@ -129,7 +126,15 @@ const HitsList = ({hits, selectedIndex, ...props}) => {
 };
 
 const ShowDisplayTho = showSelectedTho(({thoObj}) =>
-  <ConnectedHighlight attributeName="content" hit={thoObj} />
+  <div>
+    {/* <ButtonGroup>
+      <Button disabled><FontAwesome name="chevron-left" /></Button>
+      <Button href="/tcct/xemtho/random"><FontAwesome name="random" /></Button>
+      <Button disabled><FontAwesome name="print" /></Button>
+      <Button disabled><FontAwesome name="chevron-right" /></Button>
+    </ButtonGroup> */}
+    <ConnectedHighlight attributeName="content" hit={thoObj} />
+  </div>
 );
 
 const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
@@ -139,18 +144,17 @@ const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
 const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: ''}
 
 const CustomizedHits = ({hits, onlyHits, ...props}) => {
-  const { defaultPerPage, perPageItems, hitClick, showList, currentSearch,
-    toggle, selectHit, searchFocus, selectedIndex } = props;
+  const { defaultPerPage, perPageItems, hitClick, showList, toggle, selectHit,
+    searchFocus, selectedIndex } = props;
   // show only if there is more than 1 hit
   const shouldShow = (hits.length >= 1) && showList;
 
   // [X] TODO: Taking care of id when searching - number of hits return not in sequence!
   const currentID = (selectedIndex -1) % defaultPerPage;
-
   const _targetID = hits.reduce((initialID, hit, currentHitID, theArray) => {
       return (hit.index === selectedIndex) ? currentHitID : initialID;
     }, (currentID >= hits.length) ? 0 : currentID);
-  const currentPage = Math.ceil(selectedIndex / defaultPerPage);
+  let currentPage = Math.ceil(selectedIndex / defaultPerPage);
 
   return (
     <div>
@@ -176,17 +180,17 @@ const CustomizedHits = ({hits, onlyHits, ...props}) => {
             {/* [X] TODO: Showing tho for reading || for editing based on route */}
             {(hits.length!==0 && props.match.url.startsWith('/tcct/xemtho')) ?
               <ShowDisplayTho thoObj={hits[_targetID] || thoTemp}
+
               /> : null
             }
             {hits.length!==0 && (props.match.url.startsWith('/tcct/suatho')) ?
-              <ShowFormTho
-                thoObj={hits[_targetID] || thoTemp}
+              <ShowFormTho thoObj={hits[_targetID] || thoTemp}
                 // [X] NOTE: this is a trick, using key to force a re-render
                 // this case trying to using more than one source of truth with is
                 // not very welcome. The form tho can be either a blank form to input
                 // new tho or a form with data from existed tho to edit
                 key={`trigger_render_${selectedIndex}`}
-                selectedIndex={selectedIndex}
+                // selectedIndex={selectedIndex}
                 user={props.user}
                 modifyTho={props.modifyTho}
               /> : null

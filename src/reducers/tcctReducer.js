@@ -1,4 +1,5 @@
 import { randomRange } from '../utils/common_tools';
+const numberOfTho = 65;
 
 const tcctInitialState = {
   tho: [],
@@ -52,11 +53,10 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, thoIndex: {...state.thoIndex, ...payload}};
     case '@@router/LOCATION_CHANGE':
       // [] TODO: when redirect from /, cannot get the redirect link
+      console.log(payload);
+      const selectedIndex = Number(payload.pathname.split('/').slice(-1)[0]);
       return { ...state, thoIndex: {...state.thoIndex,
-        // selectedIndex: (payload.pathname === "/") ?
-        //   randomRange(1, 65) :
-        //   Number(payload.pathname.split('/').slice(-1)[0])
-        selectedIndex: Number(payload.pathname.split('/').slice(-1)[0])
+        selectedIndex: (!selectedIndex) ? randomRange(1, numberOfTho) : selectedIndex
       }}
     default:
       return { ...state, user: userData };
