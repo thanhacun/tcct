@@ -3,8 +3,8 @@ import React from 'react';
 const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
   const thoStyle = {
     container: {
-      border: 'solid 1px',
-      borderColor: 'lightgrey',
+      // border: 'solid 1px',
+      // borderColor: 'lightgrey',
     },
     content: (thoObj && thoObj.imgUrl) ? {
       padding: '5px',
@@ -18,7 +18,7 @@ const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
     }
   };
   return (
-    <div style={thoStyle.container} className="container-fluid">
+    <div style={thoStyle.container}>
       <div style={thoStyle.content}>
         <BasedComponent thoObj={thoObj} {...props} />
       </div>

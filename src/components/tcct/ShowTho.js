@@ -13,7 +13,7 @@ const ShowTho = props => {
     <div>
       <IndexTho { ...indexProps } { ...indexActions }/>
     </div>
-  );
+  )
 };
 
 const mapStateToProps = store => store.tcct;

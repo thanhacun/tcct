@@ -50,9 +50,12 @@ const enhanceEditor = compose(
   }),
   lifecycle({
     componentDidMount(){
-      if(this.props.syncHTMLtoEditor){
-        this.props.updateHTML2Editor();
-      }
+      // [] NOTE: this update is very heavy if run many times - this case should
+      // happen only one time in componentDidMount
+      this.props.updateHTML2Editor();
+      // if(this.props.syncHTMLtoEditor){
+      //   this.props.updateHTML2Editor();
+      // }
     }
   })
 );

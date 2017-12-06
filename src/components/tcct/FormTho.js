@@ -28,7 +28,8 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
           <RichTextEditor label="Code HTML tự sinh"
             updateRawHTML={(rawHTML) => updateRawHTML(rawHTML)}
             value={content}
-            syncHTMLtoEditor={selectedIndex >= 1}
+            // syncHTMLtoEditor={selectedIndex >= 1}
+            // syncHTMLtoEditor={true}
           />
       </FormGroup>
       <FormGroup>
@@ -64,7 +65,8 @@ const formHandlers = withHandlers({
     }
   },
   onDelete: props => (e) => {
-    if (props.user.userEmail && props.user.role.admin) {
+    const result = window.confirm("Có chắc chắn xóa?");
+    if (result && props.user.userEmail && props.user.role.admin) {
       props.modifyTho(props.dataState, 'delete');
     }
   },

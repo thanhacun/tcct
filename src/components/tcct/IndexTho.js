@@ -10,7 +10,7 @@ import algoliaConfig from '../../config/algolia';
 
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
-  ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup } from 'react-bootstrap';
+  ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers } from 'recompose';
 import FontAwesome from 'react-fontawesome';
 
@@ -47,6 +47,7 @@ const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...prop
             <Button onClick={() => refine()} disabled={!currentRefinement}>
               <FontAwesome name="times-circle" /></Button>
           </InputGroup.Button>
+
         </InputGroup>
       </FormGroup>
   );
@@ -116,7 +117,7 @@ const HitsList = ({hits, selectedIndex, ...props}) => {
     return (
       <div>
         <Mobile>
-          {(showList) ? <ListGroup>{ hitsList }</ListGroup> : <div></div>}
+          {(showList) ? <ListGroup>{ hitsList }</ListGroup> : null}
         </Mobile>
         <Default>
           <ListGroup>{ hitsList }</ListGroup>
@@ -157,47 +158,42 @@ const CustomizedHits = ({hits, onlyHits, ...props}) => {
   let currentPage = Math.ceil(selectedIndex / defaultPerPage);
 
   return (
-    <div>
-        <div>
-          <Col sm={4} >
-            <ConnectedSearchBox showList={shouldShow} toggle={toggle}
-              searchFocus={searchFocus} hitsNumber={hits.length}
+      <Grid><Row>
+        <Col sm={4} >
+          <ConnectedSearchBox
+            showList={shouldShow} toggle={toggle}
+            searchFocus={searchFocus} hitsNumber={hits.length}
+          />
+          <HitsList
+            hits={hits}
+            selectedIndex={selectedIndex}
+            showList={shouldShow}
+            hitClick={(hit) => hitClick(hit, selectHit)}
+          />
+          <ConnectedHitsPerPage  defaultRefinement={defaultPerPage} items={perPageItems} />
+          <ConnectedPagination ellipsis maxButtons={5} showList={shouldShow}
+            defaultRefinement={currentPage}
+          />
+        </Col>
+        <Clearfix visibleXsBlock/>
+        <Col sm={8}>
+          {/* [X] TODO: Showing tho for reading || for editing based on route */}
+          {props.match.url.startsWith('/tcct/xemtho') &&
+            <ShowDisplayTho thoObj={hits[_targetID] || thoTemp}/>
+          }
+          {props.match.url.startsWith('/tcct/suatho') &&
+            <ShowFormTho thoObj={hits[_targetID] || thoTemp}
+              // [X] NOTE: this is a trick, using key to force a re-render
+              // this case trying to using more than one source of truth with is
+              // not very welcome. The form tho can be either a blank form to input
+              // new tho or a form with data from existed tho to edit
+              key={`trigger_render_${selectedIndex}`}
+              user={props.user}
+              modifyTho={props.modifyTho}
             />
-            <HitsList hits={hits}
-              selectedIndex={selectedIndex}
-              showList={shouldShow}
-              hitClick={(hit) => hitClick(hit, selectHit)}
-            />
-            <ConnectedHitsPerPage  defaultRefinement={defaultPerPage} items={perPageItems} />
-
-            <ConnectedPagination ellipsis maxButtons={6} showList={shouldShow}
-              defaultRefinement={currentPage}
-            />
-
-          </Col>
-          <Clearfix visibleXsBlock/>
-          <Col sm={8}>
-            {/* [X] TODO: Showing tho for reading || for editing based on route */}
-            {(hits.length!==0 && props.match.url.startsWith('/tcct/xemtho')) ?
-              <ShowDisplayTho thoObj={hits[_targetID] || thoTemp}
-
-              /> : null
-            }
-            {hits.length!==0 && (props.match.url.startsWith('/tcct/suatho')) ?
-              <ShowFormTho thoObj={hits[_targetID] || thoTemp}
-                // [X] NOTE: this is a trick, using key to force a re-render
-                // this case trying to using more than one source of truth with is
-                // not very welcome. The form tho can be either a blank form to input
-                // new tho or a form with data from existed tho to edit
-                key={`trigger_render_${selectedIndex}`}
-                // selectedIndex={selectedIndex}
-                user={props.user}
-                modifyTho={props.modifyTho}
-              /> : null
-            }
-          </Col>
-        </div>
-    </div>
+          }
+        </Col>
+      </Row></Grid>
   );
 };
 const handleHitsState = compose(
@@ -213,26 +209,22 @@ const handleHitsState = compose(
     }
   })
 );
-
 const EnhancedHits = handleHitsState(CustomizedHits);
-
+const EnhancedHitsWithBusy = branch(
+  ({hits}) => {return hits.length === 0;},
+  busyLoading
+)(EnhancedHits);
 const ConnectedHits = connectHits(({ hits, selectedID, ...props }) =>
-  <EnhancedHits hits={hits} selectedID={selectedID} { ...props } />
+  <EnhancedHitsWithBusy hits={hits} selectedID={selectedID} { ...props } />
 );
 
-const ConnectedHitsWithBusy = branch(
-  (hits) => {return hits.length === 0;},
-  busyLoading
-)(ConnectedHits)
-
-const IndexTho = props => {
+const IndexTho = (props) => {
   const { ...passProps } = props;
   return (
     <InstantSearch {...algoliaConfig}>
-      <ConnectedHitsWithBusy {...passProps} />
+      <ConnectedHits {...passProps} />
     </InstantSearch>
   )
 };
 
 export default IndexTho;
-export { ConnectedHighlight };

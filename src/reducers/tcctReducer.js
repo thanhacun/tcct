@@ -53,10 +53,11 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, thoIndex: {...state.thoIndex, ...payload}};
     case '@@router/LOCATION_CHANGE':
       // [] TODO: when redirect from /, cannot get the redirect link
-      console.log(payload);
-      const selectedIndex = Number(payload.pathname.split('/').slice(-1)[0]);
+      const lastPath = payload.pathname.split('/').slice(-1)[0];
       return { ...state, thoIndex: {...state.thoIndex,
-        selectedIndex: (!selectedIndex) ? randomRange(1, numberOfTho) : selectedIndex
+        // random only if route is '/' or have string random at last path
+        // [] NOTE: this is not good as have to check path at more than 1 place  - DRY
+        selectedIndex: (lastPath === '' || lastPath === 'random') ? randomRange(1, numberOfTho) : Number(lastPath)
       }}
     default:
       return { ...state, user: userData };
