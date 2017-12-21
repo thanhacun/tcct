@@ -24,13 +24,20 @@ export function getTho(){
 export function selectHit(hit) {
   return {
     type: 'SELECT_HIT',
-    payload: {selectedIndex: hit.index, hit}
+    payload: {selectedIndex: hit.index, hit, pageTitle: `KBM - ${hit.title}`}
   }
 };
 
-export function pathToIndex(selectedIndex) {
+// export function pathToIndex(selectedIndex) {
+//   return {
+//     type: 'PATH_TO_INDEX',
+//     payload: {selectedIndex}
+//   }
+// }
+
+export function hitsToStore(hits) {
   return {
-    type: 'PATH_TO_INDEX',
-    payload: {selectedIndex}
+    type: 'HITS_TO_STORE',
+    payload: {hits}
   }
 }

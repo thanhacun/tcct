@@ -1,5 +1,5 @@
 const updateUserState = (store) => (next) => (action) => {
-  console.log(store.getState().user);
+  // console.log(store.getState().user);
   next(action);
 };
 

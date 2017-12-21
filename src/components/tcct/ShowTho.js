@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import {selectHit, getTho, pathToIndex, modifyTho} from '../../actions/tcctActions';
+import {selectHit, getTho, modifyTho, hitsToStore} from '../../actions/tcctActions';
 import IndexTho from './IndexTho';
 
 // Container
 const ShowTho = props => {
-  const { ...indexProps } = props.thoIndex;
+  const { pageTitle, ...indexProps } = props.thoIndex;
   const { ...indexActions } = props;
   return (
     <div>
@@ -18,13 +18,13 @@ const ShowTho = props => {
 
 const mapStateToProps = store => store.tcct;
 const mapDispatchToProps = dispatch => ({
-  getTho: () => dispatch(getTho()),
-  pathToIndex: (selectedIndex) => dispatch(pathToIndex(selectedIndex)),
+  getTho,
   selectHit: (hit) => {
     dispatch(selectHit(hit));
     dispatch(push(`${hit.index}`));
   },
   modifyTho: (modifiedTho, modifyAction) => dispatch(modifyTho(modifiedTho, modifyAction)),
+  hitsToStore: (hits) => dispatch(hitsToStore(hits))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowTho);

@@ -26,11 +26,11 @@ class Menu extends Component {
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
-            <TCCTMenu />
+            <TCCTMenu role={this.props.role}/>
             <Nav pullRight>
               {this.props.userEmail ?
-                <LinkContainer to="/profile"><NavItem eventKey={1}>{this.props.userEmail}</NavItem></LinkContainer> :
-                <LinkContainer to="/login"><NavItem eventKey={1}>Login</NavItem></LinkContainer>
+                <LinkContainer to="/profile"><NavItem eventKey={`profile`}>{this.props.userEmail}</NavItem></LinkContainer> :
+                <LinkContainer to="/login"><NavItem eventKey={`login`}>Login</NavItem></LinkContainer>
               }
             </Nav>
           </Navbar.Collapse>
@@ -40,14 +40,8 @@ class Menu extends Component {
   }
 };
 
-const mapStateToProps = (store) => {
-  return store.user;
-}
+const mapStateToProps = (store) => store.user;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getUserInfo: () => dispatch(getUserInfo())
-  };
-}
+const mapDispatchToProps = (dispatch) => ({getUserInfo: () => dispatch(getUserInfo())});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

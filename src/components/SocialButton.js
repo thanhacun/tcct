@@ -45,3 +45,4 @@ const SocialButton = compose(
 )(SocialLogin(Button))
 
 export default SocialButton;
+// export default SocialLogin(Button);

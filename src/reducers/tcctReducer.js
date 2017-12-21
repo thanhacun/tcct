@@ -13,7 +13,9 @@ const tcctInitialState = {
     perPageItems: [{value: 1}],
     thoToPrint: null,
     randomIndex: null,
-    currentSearch: ""
+    currentSearch: "",
+    pageTitle: "KBM",
+    hits: []
   }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
@@ -47,8 +49,8 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, busy: false, tho: payload.data }
     case 'GET_THO_REJECTED':
       return { ...state, busy: false };
-
     case 'SELECT_HIT':
+      return { ...state, thoIndex: {...state.thoIndex, ...payload}};
     case 'PATH_TO_INDEX':
       return { ...state, thoIndex: {...state.thoIndex, ...payload}};
     case '@@router/LOCATION_CHANGE':
@@ -56,9 +58,11 @@ const tcct = (state=tcctInitialState, action, userData) => {
       const lastPath = payload.pathname.split('/').slice(-1)[0];
       return { ...state, thoIndex: {...state.thoIndex,
         // random only if route is '/' or have string random at last path
-        // [] NOTE: this is not good as have to check path at more than 1 place  - DRY
-        selectedIndex: (lastPath === '' || lastPath === 'random') ? randomRange(1, numberOfTho) : Number(lastPath)
+        // [X] NOTE: this is not good as have to check path at more than 1 place  - DRY
+        selectedIndex: (lastPath === '' || lastPath === 'random') ? randomRange(1, numberOfTho) : Number(lastPath),
       }}
+    case 'HITS_TO_STORE':
+      return { ...state, thoIndex: {...state.thoIndex, ...payload}}
     default:
       return { ...state, user: userData };
   }

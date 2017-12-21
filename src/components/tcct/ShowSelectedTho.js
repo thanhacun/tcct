@@ -17,6 +17,11 @@ const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
       minHeight: '500px'
     }
   };
+  // Manupulate document title
+  // document.title = thoObj && `KBM - ${thoObj.title}`;
+  const { thoTitle } = props;
+  document.title = thoTitle;
+
   return (
     <div style={thoStyle.container}>
       <div style={thoStyle.content}>

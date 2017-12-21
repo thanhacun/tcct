@@ -67,36 +67,27 @@ const tcctLinks = [
   },
 ];
 
-const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
+// const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
 
 // [] TODO: LinkContainer not working well with activeKey and eventKey from Nav and NavItem
 
-const TCCTMenu = () => {
-  return (
-    <Nav activeKey={`/tcct/xemtho`}>
-      {
-        sortedMenu.map((item, key) => {
-          return (item.menu) ?
-            <LinkContainer to={(item.subPath) ? `${item.path}/${item.startSubPath}`: item.path} key={`tcct_${item.id}`}
-            // active={(activeKey===item.path) ? true : false}
-            >
-              <NavItem key={`key_${key}`} eventKey={item.path} >{item.des}</NavItem>
-            </LinkContainer>
-          : null
-        })
-      }
-    </Nav>
-  )
-}
-
-// const EnhancedTCCTMenu = compose(
-//   withState('activeKey', 'updateActiveKey', '/tcct/xemtho'),
-//   withHandlers({
-//     selectKey: ({updateActiveKey}) => (selectedKey) => {
-//       updateActiveKey(selectedKey);
-//     }
-//   })
-// )(TCCTMenuItems);
+// const OldTCCTMenu = () => {
+//   return (
+//     <Nav activeKey={`/tcct/xemtho`}>
+//       {
+//         sortedMenu.map((item, key) => {
+//           return (item.menu) ?
+//             <LinkContainer to={(item.subPath) ? `${item.path}/${item.startSubPath}`: item.path} key={`tcct_${item.id}`}
+//             // active={(activeKey===item.path) ? true : false}
+//             >
+//               <NavItem key={`key_${key}`} eventKey={item.path} >{item.des}</NavItem>
+//             </LinkContainer>
+//           : null
+//         })
+//       }
+//     </Nav>
+//   )
+// };
 
 const tcctRoutes = tcctLinks.map((app) => {
   return (
@@ -104,6 +95,18 @@ const tcctRoutes = tcctLinks.map((app) => {
     component={app.component} key={`tcct_${app.id}`} />
   );
 });
+
+const TCCTMenu = ({role}) =>
+  <Nav activeKey={'/tcct/xemtho'}>
+    <LinkContainer to={'/tcct/xemtho/1'} key={`tcct_0`}>
+      <NavItem>{`Xem Thơ`}</NavItem>
+    </LinkContainer>
+    {(role.admin) ?
+      <LinkContainer to={'/tcct/suatho/0'} key={`tcct_1`}>
+        <NavItem>{`Thêm/Sửa Thơ`}</NavItem>
+      </LinkContainer>
+      : null}
+  </Nav>
 
 export default tcctRoutes;
 export { TCCTMenu };

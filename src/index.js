@@ -24,6 +24,8 @@ ReactDOM.render(
     <div>
       <Menu />
       <Route exact path="/" key={`tcct_root`} render={() => <Redirect to="/tcct/xemtho/random" />} />
+      <Route path={`/tcct/xemtho/random`} key={`tcct_random`} render={
+        () => <Redirect to={`/tcct/xemtho/${store.getState().tcct.thoIndex.selectedIndex}`}/>}/>
       <Route exact path="/tcct/print/:index" component={PrintTho} key={`tcct_print`} />
       {tcctRoutes}
     </div>

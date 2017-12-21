@@ -53,16 +53,16 @@ class UserSignup extends Component {
           </Form>
         <br />
         <h1>Social Signup</h1>
-        <SocialButton provider="facebook" disabled
+        <SocialButton provider="facebook" className="btn btn-primary"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
-          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
-          className="btn btn-primary"><span className="fa fa-facebook"></span> Facebook
+          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}>
+          <span className="fa fa-facebook"></span> Facebook
         </SocialButton>
 
-        <SocialButton provider="google" disabled
+        <SocialButton provider="google" className="btn btn-danger"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
-          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}
-          className="btn btn-danger"><span className="fa fa-google-plus"></span> Google
+          onLoginFailure={(response) => this.handleSocialLoginFailer(response)}>
+          <span className="fa fa-google-plus"></span> Google
         </SocialButton>
         {/* {this.props.facebook.token ? <Button onClick={this.props.facebookAPILogin(this.props.facebook.token)}></Button> : <span>Waiting for facebook token ...</span>} */}
       </div>

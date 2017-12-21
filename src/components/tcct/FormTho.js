@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, branch, withHandlers, withState } from 'recompose';
+import { compose, withHandlers, withState } from 'recompose';
 import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button } from 'react-bootstrap';
 
 import RichTextEditor from '../RichTextEditor';
@@ -9,7 +9,8 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
   // const newTho = {index: '', title: '', content: '', footer: '', imgUrl: ''}
   // const tho = (existedTho) ? existedTho : props.tho;
   const { index, title, content, footer, imgUrl } = dataState;
-  const { onChange, onSubmit, onReset, updateRawHTML, onDelete } = props;
+  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, user } = props;
+  const isAdmin = user && user.userEmail && user.role.admin;
   return (
     <Form onSubmit={onSubmit}>
       <FormGroup>
@@ -43,9 +44,9 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
           onChange={onChange} ></FormControl>
       </FormGroup>
       <ButtonToolbar>
-        <Button type="submit" bsStyle="warning">Thêm/Lưu</Button>
+        <Button type="submit" bsStyle="warning" disabled={!isAdmin}>Thêm/Lưu</Button>
         <Button bsStyle="danger" onClick={onDelete}
-          disabled={!(props.user.userEmail && props.user.role.admin)}>Xóa</Button>
+          disabled={!isAdmin}>Xóa</Button>
         <Button bsStyle="primary" type="reset" onClick={onReset}>Reset</Button>
       </ButtonToolbar>
     </Form>

@@ -11,7 +11,7 @@ import algoliaConfig from '../../config/algolia';
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
-import { branch, compose, withState, withHandlers } from 'recompose';
+import { branch, compose, withState, withHandlers, lifecycle } from 'recompose';
 import FontAwesome from 'react-fontawesome';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
@@ -19,19 +19,20 @@ import showSelectedTho from './ShowSelectedTho';
 import FormTho from './FormTho';
 
 import busyLoading from '../busyLoading';
+import AlgoliaLogo from './algolia-mark-blue.svg';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
-  const alogilaLogoStyle = {
+  const algoliaLogoStyle = {
     height: "20px"
   };
-  const alogliaLogoSrc = "https://upload.wikimedia.org/wikipedia/commons/6/69/Algolia-logo.svg";
+  // const alogliaLogoSrc = "https://upload.wikimedia.org/wikipedia/commons/6/69/Algolia-logo.svg";
   const { toggle, showList, searchFocus, hitsNumber} = props;
   const SearchPrefix = mediaQuery(
     () => <InputGroup.Button><Button onClick={toggle}><FontAwesome name={(showList) ? 'chevron-up' : 'chevron-down'} />
           </Button></InputGroup.Button>,
     () => <InputGroup.Addon><a href="https://algolia.com" target="_"><img className="responsive"
-    src={alogliaLogoSrc} alt="Algolia"
-    style={alogilaLogoStyle}/></a></InputGroup.Addon>
+    src={AlgoliaLogo} alt="Algolia logo"
+    style={algoliaLogoStyle}/></a></InputGroup.Addon>
   );
 
   return (
@@ -126,25 +127,29 @@ const HitsList = ({hits, selectedIndex, ...props}) => {
     )
 };
 
-const ShowDisplayTho = showSelectedTho(({thoObj}) =>
-  <div>
-    {/* <ButtonGroup>
-      <Button disabled><FontAwesome name="chevron-left" /></Button>
-      <Button href="/tcct/xemtho/random"><FontAwesome name="random" /></Button>
-      <Button disabled><FontAwesome name="print" /></Button>
-      <Button disabled><FontAwesome name="chevron-right" /></Button>
-    </ButtonGroup> */}
-    <ConnectedHighlight attributeName="content" hit={thoObj} />
+const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
+  return (
+    <div>
+      <Default>
+        <ButtonGroup className="hidden-print">
+          {/* <Button disabled><FontAwesome name="chevron-left" /></Button> */}
+          <Button href="/tcct/xemtho/random"><FontAwesome name="random" /></Button>
+          <Button onClick={() => window.print()}><FontAwesome name="print" /></Button>
+          {/* <Button disabled><FontAwesome name="chevron-right" /></Button> */}
+        </ButtonGroup>
+      </Default>
+    <ConnectedHighlight attributeName="content" hit={thoObj} {...props}/>
   </div>
-);
+)
+});
 
 const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
   <FormTho selectedTho={thoObj} {...props}/>
 );
 
-const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: ''}
+const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: ''};
 
-const CustomizedHits = ({hits, onlyHits, ...props}) => {
+const CustomizedHits = ({hits, ...props}) => {
   const { defaultPerPage, perPageItems, hitClick, showList, toggle, selectHit,
     searchFocus, selectedIndex } = props;
   // show only if there is more than 1 hit
@@ -155,11 +160,13 @@ const CustomizedHits = ({hits, onlyHits, ...props}) => {
   const _targetID = hits.reduce((initialID, hit, currentHitID, theArray) => {
       return (hit.index === selectedIndex) ? currentHitID : initialID;
     }, (currentID >= hits.length) ? 0 : currentID);
-  let currentPage = Math.ceil(selectedIndex / defaultPerPage);
+  const currentPage = Math.ceil(selectedIndex / defaultPerPage);
+  const thoTitle = (hits[_targetID]) ? hits[_targetID].title : '';
 
   return (
       <Grid><Row>
-        <Col sm={4} >
+        <Col sm={4} className="hidden-print">
+          <ConnectedHitsPerPage  defaultRefinement={defaultPerPage} items={perPageItems}/>
           <ConnectedSearchBox
             showList={shouldShow} toggle={toggle}
             searchFocus={searchFocus} hitsNumber={hits.length}
@@ -170,24 +177,26 @@ const CustomizedHits = ({hits, onlyHits, ...props}) => {
             showList={shouldShow}
             hitClick={(hit) => hitClick(hit, selectHit)}
           />
-          <ConnectedHitsPerPage  defaultRefinement={defaultPerPage} items={perPageItems} />
           <ConnectedPagination ellipsis maxButtons={5} showList={shouldShow}
             defaultRefinement={currentPage}
+            // using the same trick with fomrtho to force a re-render
+            key={`trigger_render_page_${selectedIndex}`
+          }
           />
         </Col>
         <Clearfix visibleXsBlock/>
         <Col sm={8}>
           {/* [X] TODO: Showing tho for reading || for editing based on route */}
           {props.match.url.startsWith('/tcct/xemtho') &&
-            <ShowDisplayTho thoObj={hits[_targetID] || thoTemp}/>
+            <ShowDisplayTho thoObj={hits[_targetID]} thoTitle={`KBM - Xem thơ - ${thoTitle}`}/>
           }
           {props.match.url.startsWith('/tcct/suatho') &&
-            <ShowFormTho thoObj={hits[_targetID] || thoTemp}
+            <ShowFormTho thoObj={hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
               // [X] NOTE: this is a trick, using key to force a re-render
               // this case trying to using more than one source of truth with is
               // not very welcome. The form tho can be either a blank form to input
               // new tho or a form with data from existed tho to edit
-              key={`trigger_render_${selectedIndex}`}
+              key={`trigger_render_form_${selectedIndex}`}
               user={props.user}
               modifyTho={props.modifyTho}
             />
@@ -209,11 +218,25 @@ const handleHitsState = compose(
     }
   })
 );
-const EnhancedHits = handleHitsState(CustomizedHits);
+
+const hitsLifeCycle = lifecycle({
+  componentDidUpdate() {
+    if (this.props.thoIndex.hits.length === 0) {
+      this.props.hitsToStore(this.props.hits);
+    }
+  }
+});
+
+const EnhancedHits = compose(
+  // hitsLifeCycle,
+  handleHitsState,
+)(CustomizedHits);
+
 const EnhancedHitsWithBusy = branch(
-  ({hits}) => {return hits.length === 0;},
+  ({hits}) => hits.length === 0,
   busyLoading
 )(EnhancedHits);
+
 const ConnectedHits = connectHits(({ hits, selectedID, ...props }) =>
   <EnhancedHitsWithBusy hits={hits} selectedID={selectedID} { ...props } />
 );
@@ -224,7 +247,7 @@ const IndexTho = (props) => {
     <InstantSearch {...algoliaConfig}>
       <ConnectedHits {...passProps} />
     </InstantSearch>
-  )
+  );
 };
 
 export default IndexTho;
