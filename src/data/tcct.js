@@ -101,7 +101,7 @@ const TCCTMenu = ({role}) =>
     <LinkContainer to={'/tcct/xemtho/1'} key={`tcct_0`}>
       <NavItem>{`Xem Thơ`}</NavItem>
     </LinkContainer>
-    {(role.admin) ?
+    {(role && role.admin) ?
       <LinkContainer to={'/tcct/suatho/0'} key={`tcct_1`}>
         <NavItem>{`Thêm/Sửa Thơ`}</NavItem>
       </LinkContainer>
