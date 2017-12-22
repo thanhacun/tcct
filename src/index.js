@@ -31,4 +31,4 @@ ReactDOM.render(
     </div>
   </ConnectedRouter>
 </Provider>, app);
-registerServiceWorker();
+// registerServiceWorker();
