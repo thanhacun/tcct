@@ -27,7 +27,7 @@ const SocialUserInfo = ({provider, bsStyle, ...props}) =>
             </SocialButton>
           </p>
           : <SocialButton provider={provider}
-            onLoginSuccess={(response, local_email) => props.socialConnect(response, props.local.email)}
+            onLoginSuccess={(response) => props.socialConnect(response, props.localEmail)}
             // onLoginFailure={handleSocialLoginFailer}
             className={`btn btn-${bsStyle}`}><span className={`fa fa-${provider}`}></span> Connect
           </SocialButton> }
@@ -55,7 +55,7 @@ class UserProfile extends Component {
           <Col sm={6}>
             <Well>
               <h3><span className="fa fa-user"></span> Local</h3>
-              {this.props.local.email &&
+              {this.props.local && this.props.local.email &&
                 <p>
                   <strong>email</strong>: {this.props.local.email} <br/>
                   <strong>password</strong>: {this.props.local.password.split('').slice(0,12).join('') + '...'}
@@ -76,14 +76,16 @@ class UserProfile extends Component {
 
           {/* FACEBOOK INFORMATION */}
           <Col sm={6}>
-            <SocialUserInfo provider="facebook" {...this.props.socialUnlink}
-              {...this.props.facebook} {...this.props.local.email} bsStyle="primary"/>
+            <SocialUserInfo provider="facebook" bsStyle="primary"
+              socialUnlink={this.props.socialUnlink} {...this.props.facebook}
+              localEmail={this.props.local.email} socialConnect={this.props.socialConnect}/>
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
-            <SocialUserInfo provider="google" {...this.props.socialUnlink}
-              {...this.props.google} {...this.props.local.email} bsStyle="danger"/>
+            <SocialUserInfo provider="google" bsStyle="danger"
+              socialUnlink={this.props.socialUnlink} {...this.props.google}
+              localEmail= {this.props.local.email} socialConnect={this.props.socialConnect}/>
           </Col>
         </Row>
       </div>

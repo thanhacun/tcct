@@ -18,13 +18,14 @@ const ShowTho = props => {
 
 const mapStateToProps = store => store.tcct;
 const mapDispatchToProps = dispatch => ({
-  getTho,
+  getTho: () => dispatch(getTho()),
   selectHit: (hit) => {
     dispatch(selectHit(hit));
     dispatch(push(`${hit.index}`));
   },
   modifyTho: (modifiedTho, modifyAction) => dispatch(modifyTho(modifiedTho, modifyAction)),
-  hitsToStore: (hits) => dispatch(hitsToStore(hits))
+  hitsToStore: (hits) => dispatch(hitsToStore(hits)),
+  goTo: (path) => dispatch(push(path))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowTho);

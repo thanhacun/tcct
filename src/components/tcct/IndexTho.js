@@ -135,6 +135,8 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
           {/* <Button disabled><FontAwesome name="chevron-left" /></Button> */}
           <Button href="/tcct/xemtho/random"><FontAwesome name="random" /></Button>
           <Button onClick={() => window.print()}><FontAwesome name="print" /></Button>
+          <Button onClick={() => props.goTo(`/tcct/suatho/${thoObj.index}`)}
+          disabled={!props.isAdmin}><FontAwesome name="edit" /></Button>
           {/* <Button disabled><FontAwesome name="chevron-right" /></Button> */}
         </ButtonGroup>
       </Default>
@@ -147,11 +149,38 @@ const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
   <FormTho selectedTho={thoObj} {...props}/>
 );
 
+const ShowJumbotron = () => {
+  const bgImages = ['https://i.imgur.com/zFku8m1.jpg'];
+  const jbStyle={
+    backgroundImage: `url(${bgImages[0]})`,
+    opacity: '0.8',
+    backgroundSize: 'cover',
+    color: 'red',
+    fontFamily: 'monospace',
+    fontWeight: 'bold'
+  };
+
+  return (
+    <Default>
+      <Jumbotron style={jbStyle}>
+        <div>
+          <h3 className="text-center">
+            Trời hừng sáng rộn ràng <br />
+            Mây ráng chiều thanh thản <br/>
+            Cả cuộc đời trong sáng <br/>
+            Chí không để lụi tàn... <br/>
+          </h3>
+        </div>
+      </Jumbotron>
+    </Default>
+  )
+}
+
 const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: ''};
 
 const CustomizedHits = ({hits, ...props}) => {
   const { defaultPerPage, perPageItems, hitClick, showList, toggle, selectHit,
-    searchFocus, selectedIndex } = props;
+    searchFocus, selectedIndex, goTo } = props;
   // show only if there is more than 1 hit
   const shouldShow = (hits.length >= 1) && showList;
 
@@ -165,6 +194,7 @@ const CustomizedHits = ({hits, ...props}) => {
 
   return (
       <Grid><Row>
+        <ShowJumbotron />
         <Col sm={4} className="hidden-print">
           <ConnectedHitsPerPage  defaultRefinement={defaultPerPage} items={perPageItems}/>
           <ConnectedSearchBox
@@ -188,12 +218,13 @@ const CustomizedHits = ({hits, ...props}) => {
         <Col sm={8}>
           {/* [X] TODO: Showing tho for reading || for editing based on route */}
           {props.match.url.startsWith('/tcct/xemtho') &&
-            <ShowDisplayTho thoObj={hits[_targetID]} thoTitle={`KBM - Xem thơ - ${thoTitle}`}/>
+            <ShowDisplayTho thoObj={hits[_targetID]} goTo={goTo}
+              thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin}/>
           }
           {props.match.url.startsWith('/tcct/suatho') &&
             <ShowFormTho thoObj={hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
               // [X] NOTE: this is a trick, using key to force a re-render
-              // this case trying to using more than one source of truth with is
+              // this case trying to use more than one source of truth with is
               // not very welcome. The form tho can be either a blank form to input
               // new tho or a form with data from existed tho to edit
               key={`trigger_render_form_${selectedIndex}`}
