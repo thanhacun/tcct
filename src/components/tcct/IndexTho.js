@@ -150,12 +150,12 @@ const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
 );
 
 const ShowJumbotron = () => {
-  const bgImages = ['https://i.imgur.com/zFku8m1.jpg'];
+  const bgImages = ['https://i.imgur.com/zFku8m1.jpg', 'https://i.imgur.com/BTS3ukW.jpg?2'];
   const jbStyle={
-    backgroundImage: `url(${bgImages[0]})`,
-    opacity: '0.8',
+    backgroundImage: `url(${bgImages[1]})`,
+    opacity: '0.7',
     backgroundSize: 'cover',
-    color: 'red',
+    color: 'black',
     fontFamily: 'monospace',
     fontWeight: 'bold'
   };
@@ -165,10 +165,12 @@ const ShowJumbotron = () => {
       <Jumbotron style={jbStyle}>
         <div>
           <h3 className="text-center">
-            Trời hừng sáng rộn ràng <br />
-            Mây ráng chiều thanh thản <br/>
-            Cả cuộc đời trong sáng <br/>
-            Chí không để lụi tàn... <br/>
+            <span style={{backgroundColor: 'rgba(248, 248, 248, 0.5)'}}>
+              Trời hừng sáng rộn ràng <br />
+              Mây ráng chiều thanh thản <br/>
+              Cả cuộc đời trong sáng <br/>
+              Chí không để lụi tàn... <br/>
+            </span>
           </h3>
         </div>
       </Jumbotron>
