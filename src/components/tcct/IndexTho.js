@@ -11,7 +11,7 @@ import algoliaConfig from '../../config/algolia';
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
-import { branch, compose, withState, withHandlers, lifecycle } from 'recompose';
+import { branch, compose, withState, withHandlers } from 'recompose';
 import FontAwesome from 'react-fontawesome';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
@@ -26,7 +26,7 @@ const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...prop
     height: "20px"
   };
   // const alogliaLogoSrc = "https://upload.wikimedia.org/wikipedia/commons/6/69/Algolia-logo.svg";
-  const { toggle, showList, searchFocus, hitsNumber} = props;
+  const { toggle, showList, searchFocus } = props;
   const SearchPrefix = mediaQuery(
     () => <InputGroup.Button><Button onClick={toggle}><FontAwesome name={(showList) ? 'chevron-up' : 'chevron-down'} />
           </Button></InputGroup.Button>,
@@ -146,7 +146,7 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
 });
 
 const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
-  <FormTho selectedTho={thoObj} {...props}/>
+  <FormTho selectedTho={thoObj} key={`trigger_render_form_${thoObj.index}`} {...props}/>
 );
 
 const ShowJumbotron = () => {
@@ -166,10 +166,10 @@ const ShowJumbotron = () => {
         <div>
           <h3 className="text-center">
             <span style={{backgroundColor: 'rgba(248, 248, 248, 0.5)'}}>
-              Trời hừng sáng rộn ràng <br />
-              Mây ráng chiều thanh thản <br/>
-              Cả cuộc đời trong sáng <br/>
-              Chí không để lụi tàn... <br/>
+              Trời hừng sáng rộn ràng<br />
+              Mây ráng chiều thanh thản<br/>
+              Cả cuộc đời trong sáng<br/>
+              Chí không để lụi tàn...<br/>
             </span>
           </h3>
         </div>
@@ -193,6 +193,26 @@ const CustomizedHits = ({hits, ...props}) => {
     }, (currentID >= hits.length) ? 0 : currentID);
   const currentPage = Math.ceil(selectedIndex / defaultPerPage);
   const thoTitle = (hits[_targetID]) ? hits[_targetID].title : '';
+
+  let ThoBlock = null;
+  if (props.match.url.startsWith('/tcct/xemtho')) {
+    ThoBlock = <ShowDisplayTho thoObj={hits[_targetID]} goTo={goTo}
+      thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin} />
+  }
+  if (props.match.url.startsWith('/tcct/suatho')) {
+    ThoBlock = <div>
+      <ShowFormTho thoObj={hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
+        // [X] NOTE: this is a trick, using key to force a re-render
+        // this case trying to use other than one-source-of-truth with is
+        // NOT very welcome. The form tho can be either a blank form to input
+        // new tho or a form with data from existed tho to edit
+        key={`trigger_render_form_${selectedIndex}`}
+        user={props.user}
+        modifyTho={props.modifyTho}
+      />
+      {/* <h1>{hits[_targetID].index}</h1> */}
+    </div>
+  }
 
   return (
       <Grid><Row>
@@ -219,25 +239,12 @@ const CustomizedHits = ({hits, ...props}) => {
         <Clearfix visibleXsBlock/>
         <Col sm={8}>
           {/* [X] TODO: Showing tho for reading || for editing based on route */}
-          {props.match.url.startsWith('/tcct/xemtho') &&
-            <ShowDisplayTho thoObj={hits[_targetID]} goTo={goTo}
-              thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin}/>
-          }
-          {props.match.url.startsWith('/tcct/suatho') &&
-            <ShowFormTho thoObj={hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
-              // [X] NOTE: this is a trick, using key to force a re-render
-              // this case trying to use more than one source of truth with is
-              // not very welcome. The form tho can be either a blank form to input
-              // new tho or a form with data from existed tho to edit
-              key={`trigger_render_form_${selectedIndex}`}
-              user={props.user}
-              modifyTho={props.modifyTho}
-            />
-          }
+          {ThoBlock}
         </Col>
       </Row></Grid>
   );
 };
+
 const handleHitsState = compose(
   withState('showList', 'handleShowList', false),
   withHandlers({
@@ -252,13 +259,13 @@ const handleHitsState = compose(
   })
 );
 
-const hitsLifeCycle = lifecycle({
-  componentDidUpdate() {
-    if (this.props.thoIndex.hits.length === 0) {
-      this.props.hitsToStore(this.props.hits);
-    }
-  }
-});
+// const hitsLifeCycle = lifecycle({
+//   componentDidUpdate() {
+//     if (this.props.thoIndex.hits.length === 0) {
+//       this.props.hitsToStore(this.props.hits);
+//     }
+//   }
+// });
 
 const EnhancedHits = compose(
   // hitsLifeCycle,
