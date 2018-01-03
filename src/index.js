@@ -5,16 +5,24 @@ import { Route, Redirect } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/css/font-awesome.css';
 import './index.css';
+
+//fontawesome 5.x.x
+import fontawesome from '@fortawesome/fontawesome';
+// import FontAwesome from '@fortawesome/react-fontawesome';
+import { faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
+  faEdit } from '@fortawesome/fontawesome-free-solid';
+import { faAlgolia } from '@fortawesome/fontawesome-free-brands';
 
 import registerServiceWorker from './registerServiceWorker';
 import Menu from './components/Menu';
 import PrintTho from './components/tcct/PrintTho';
-// import ShowTho from './components/tcct/ShowTho';
 
 import store, { history } from './store';
 import tcctRoutes from './data/tcct';
+
+fontawesome.library.add(faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
+  faEdit, faAlgolia);
 
 const app = document.getElementById('root');
 // [] TODO: numbers of tho from a prop

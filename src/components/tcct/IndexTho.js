@@ -12,27 +12,31 @@ import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers } from 'recompose';
-import FontAwesome from 'react-fontawesome';
+// import FontAwesome from 'react-fontawesome';
+import FontAwesome from '@fortawesome/react-fontawesome';
+// import { faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
+  // faEdit } from '@fortawesome/fontawesome-free-solid';
+// import { faAlgolia } from '@fortawesome/fontawesome-free-brands';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
 import showSelectedTho from './ShowSelectedTho';
 import FormTho from './FormTho';
 
 import busyLoading from '../busyLoading';
-import AlgoliaLogo from './algolia-mark-blue.svg';
+// import AlgoliaLogo from './algolia-mark-blue.svg';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
-  const algoliaLogoStyle = {
-    height: "20px"
-  };
-  // const alogliaLogoSrc = "https://upload.wikimedia.org/wikipedia/commons/6/69/Algolia-logo.svg";
+  // const algoliaLogoStyle = {
+  //   height: "20px"
+  // };
   const { toggle, showList, searchFocus } = props;
   const SearchPrefix = mediaQuery(
-    () => <InputGroup.Button><Button onClick={toggle}><FontAwesome name={(showList) ? 'chevron-up' : 'chevron-down'} />
+    () => <InputGroup.Button><Button onClick={toggle}><FontAwesome icon={(showList) ? 'chevron-up' : 'chevron-down'} />
           </Button></InputGroup.Button>,
-    () => <InputGroup.Addon><a href="https://algolia.com" target="_"><img className="responsive"
-    src={AlgoliaLogo} alt="Algolia logo"
-    style={algoliaLogoStyle}/></a></InputGroup.Addon>
+    () => <InputGroup.Addon><a href="https://algolia.com" target="_">
+    {/* <img className="responsive" src={AlgoliaLogo} alt="Algolia logo" style={algoliaLogoStyle}/> */}
+    <FontAwesome icon={['fab', 'algolia']} size={`lg`}/>
+  </a></InputGroup.Addon>
   );
 
   return (
@@ -46,7 +50,7 @@ const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...prop
         />
           <InputGroup.Button>
             <Button onClick={() => refine()} disabled={!currentRefinement}>
-              <FontAwesome name="times-circle" /></Button>
+              <FontAwesome icon={`times-circle`} /></Button>
           </InputGroup.Button>
 
         </InputGroup>
@@ -133,10 +137,10 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
       <Default>
         <ButtonGroup className="hidden-print">
           {/* <Button disabled><FontAwesome name="chevron-left" /></Button> */}
-          <Button href="/tcct/xemtho/random"><FontAwesome name="random" /></Button>
-          <Button onClick={() => window.print()}><FontAwesome name="print" /></Button>
+          <Button href="/tcct/xemtho/random"><FontAwesome icon={'random'} /></Button>
+          <Button onClick={() => window.print()}><FontAwesome icon={`print`} /></Button>
           <Button onClick={() => props.goTo(`/tcct/suatho/${thoObj.index}`)}
-          disabled={!props.isAdmin}><FontAwesome name="edit" /></Button>
+          disabled={!props.isAdmin}><FontAwesome icon={`edit`} /></Button>
           {/* <Button disabled><FontAwesome name="chevron-right" /></Button> */}
         </ButtonGroup>
       </Default>
