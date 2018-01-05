@@ -4,7 +4,7 @@ import React from 'react';
 /*=== ALGOLIA InstantSearch ===*/
 import { InstantSearch } from 'react-instantsearch/dom';
 import { connectSearchBox, connectHits, connectHighlight, connectPagination,
-  connectHitsPerPage } from 'react-instantsearch/connectors'
+  connectHitsPerPage, connectStats } from 'react-instantsearch/connectors'
 import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
@@ -144,16 +144,19 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
 )
 });
 
-const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
-  <FormTho selectedTho={thoObj}
-    // [X] NOTE: this is a trick, using key to force a re-render
-    // this case trying to use other than one-source-of-truth with is
-    // NOT very welcome. The form tho can be either a blank form to input
-    // new tho or a form with data from existed tho to edit
-    // key={`trigger_render_form_${selectedIndex}`}
-    key={`trigger_render_form_${thoObj.index}`}
-    {...props}/>
-);
+const ShowFormTho = connectStats(showSelectedTho(({nbHits, thoObj, ...props}) =>
+    <FormTho
+        selectedTho={thoObj}
+        // [X] NOTE: this is a trick, using key to force a re-render
+        // this case trying to use other than one-source-of-truth with is
+        // NOT very welcome. The form tho can be either a blank form to input
+        // new tho or a form with data from existed tho to edit
+        // key={`trigger_render_form_${selectedIndex}`}
+        key={`trigger_render_form_${thoObj.index}`}
+        {...props}
+        nbHits={nbHits}
+    />
+))
 
 const ShowJumbotron = () => {
   const bgImages = ['https://i.imgur.com/zFku8m1.jpg', 'https://i.imgur.com/BTS3ukW.jpg?2'];

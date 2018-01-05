@@ -9,8 +9,8 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 
 const FormTho = ({dataState, selectedIndex, ...props}) => {
   // either load data from tho to edit or allow to input new data
-  const { index, title, content, footer, imgUrl, changed } = dataState;
-  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onKeyPress, onRefresh, user } = props;
+  const { index, title, content, footer, imgUrl } = dataState;
+  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onRefresh, user } = props;
   const isAdmin = user && user.userEmail && user.role.admin;
   // [] NOTE: shallow compare, may affect performance
   const isChange = !(JSON.stringify(dataState) === JSON.stringify(props.selectedTho));
@@ -25,8 +25,8 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
       <FormGroup>
         <ControlLabel>STT</ControlLabel>
         <FormControl type="number" name="index" value={index}
-          // placeholder={this.props.tho.length + 1}
-          onChange={onChange} required></FormControl>
+          placeholder={props.nbHits + 1 || 0} onChange={onChange} required
+          disabled={!!props.nbHits}></FormControl>
       </FormGroup>
       <FormGroup>
         <ControlLabel>Tiêu đề</ControlLabel>
@@ -38,7 +38,6 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
           <RichTextEditor label="Code HTML tự sinh"
             updateRawHTML={(rawHTML) => updateRawHTML(rawHTML)}
             value={content}
-            // changeCallback={onChange}
             // syncHTMLtoEditor={selectedIndex >= 1}
             // syncHTMLtoEditor={true}
           />
