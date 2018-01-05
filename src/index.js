@@ -9,10 +9,9 @@ import './index.css';
 
 //fontawesome 5.x.x
 import fontawesome from '@fortawesome/fontawesome';
-// import FontAwesome from '@fortawesome/react-fontawesome';
 import { faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
-  faEdit } from '@fortawesome/fontawesome-free-solid';
-import { faAlgolia } from '@fortawesome/fontawesome-free-brands';
+  faEdit, faSignInAlt, faUserPlus, faTimes, faTrashAlt, faSyncAlt, faSave } from '@fortawesome/fontawesome-free-solid';
+import { faAlgolia, faFacebook, faGooglePlus, faGoogle } from '@fortawesome/fontawesome-free-brands';
 
 import registerServiceWorker from './registerServiceWorker';
 import Menu from './components/Menu';
@@ -22,7 +21,7 @@ import store, { history } from './store';
 import tcctRoutes from './data/tcct';
 
 fontawesome.library.add(faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
-  faEdit, faAlgolia);
+  faEdit, faAlgolia, faSignInAlt, faUserPlus, faFacebook, faGooglePlus, faGoogle);
 
 const app = document.getElementById('root');
 // [] TODO: numbers of tho from a prop
@@ -39,4 +38,8 @@ ReactDOM.render(
     </div>
   </ConnectedRouter>
 </Provider>, app);
-// registerServiceWorker();
+
+// Only deploy registerServiceWorker in production mode
+if (process.env.NODE_ENV === 'production' && registerServiceWorker) {
+  registerServiceWorker();
+}

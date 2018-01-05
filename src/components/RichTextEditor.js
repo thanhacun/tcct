@@ -31,13 +31,11 @@ const RichTextEditor = props => {
 
 const enhanceEditor = compose(
   withState('editorState', 'updateValue', EditorState.createEmpty()),
-  // withState('value', 'updateHTML', ''),
   withHandlers({
     onEditorStateChange: ({updateValue, ...props}) => (editorState) => {
       const rawHTML = draftToHtml(convertToRaw(editorState.getCurrentContent()));
       props.updateRawHTML(rawHTML);
       updateValue(editorState);
-      // updateHTML(rawHTML);
     },
     updateHTML2Editor: ({updateValue, ...props}) => (editorState) => {
       const contentBlock = htmlToDraft(props.value);
@@ -54,7 +52,7 @@ const enhanceEditor = compose(
       // happen only one time in componentDidMount
       this.props.updateHTML2Editor();
       // if(this.props.syncHTMLtoEditor){
-      //   this.props.updateHTML2Editor();
+      // this.props.updateHTML2Editor();
       // }
     }
   })

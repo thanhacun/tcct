@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import SocialButton from './SocialButton';
 
 import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import FontAwesome from '@fortawesome/react-fontawesome';
 
 import { localSignup, socialSignup } from '../actions/userActions';
 
@@ -39,7 +40,7 @@ class UserSignup extends Component {
   render(){
     return (
       <div className="container">
-        <h1>Local signin</h1>
+        <h1><FontAwesome icon={`user-plus`}/> Local Signup</h1>
           <Form onSubmit={this.handleSubmit}>
             <FormGroup>
               <ControlLabel>Email</ControlLabel>
@@ -52,17 +53,17 @@ class UserSignup extends Component {
             <Button type="submit" bsStyle="primary">Submit</Button>
           </Form>
         <br />
-        <h1>Social Signup</h1>
+        <h1><FontAwesome icon={`user-plus`}/>Social Signup</h1>
         <SocialButton provider="facebook" className="btn btn-primary"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
           onLoginFailure={(response) => this.handleSocialLoginFailer(response)}>
-          <span className="fa fa-facebook"></span> Facebook
+          <FontAwesome icon={[`fab`, `facebook`]} /> Facebook
         </SocialButton>
 
         <SocialButton provider="google" className="btn btn-danger"
           onLoginSuccess={(socialResponse) => this.props.socialSignup(socialResponse)}
           onLoginFailure={(response) => this.handleSocialLoginFailer(response)}>
-          <span className="fa fa-google-plus"></span> Google
+          <FontAwesome icon={[`fab`, `google`]}/> Google
         </SocialButton>
         {/* {this.props.facebook.token ? <Button onClick={this.props.facebookAPILogin(this.props.facebook.token)}></Button> : <span>Waiting for facebook token ...</span>} */}
       </div>

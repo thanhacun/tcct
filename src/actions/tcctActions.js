@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function modifyTho(modifiedTho, modifyAction){
   return {
-    type: 'ADD_THO',
+    type: 'MODIFY_THO',
     payload: axios.post('/api/tcct/tho', {modifiedTho, modifyAction})
   }
 };

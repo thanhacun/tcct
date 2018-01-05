@@ -12,18 +12,13 @@ import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers } from 'recompose';
-// import FontAwesome from 'react-fontawesome';
 import FontAwesome from '@fortawesome/react-fontawesome';
-// import { faChevronUp, faChevronDown, faTimesCircle, faPrint, faRandom,
-  // faEdit } from '@fortawesome/fontawesome-free-solid';
-// import { faAlgolia } from '@fortawesome/fontawesome-free-brands';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
 import showSelectedTho from './ShowSelectedTho';
 import FormTho from './FormTho';
 
 import busyLoading from '../busyLoading';
-// import AlgoliaLogo from './algolia-mark-blue.svg';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
   // const algoliaLogoStyle = {
@@ -150,7 +145,14 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
 });
 
 const ShowFormTho = showSelectedTho(({thoObj, ...props}) =>
-  <FormTho selectedTho={thoObj} key={`trigger_render_form_${thoObj.index}`} {...props}/>
+  <FormTho selectedTho={thoObj}
+    // [X] NOTE: this is a trick, using key to force a re-render
+    // this case trying to use other than one-source-of-truth with is
+    // NOT very welcome. The form tho can be either a blank form to input
+    // new tho or a form with data from existed tho to edit
+    // key={`trigger_render_form_${selectedIndex}`}
+    key={`trigger_render_form_${thoObj.index}`}
+    {...props}/>
 );
 
 const ShowJumbotron = () => {
@@ -205,16 +207,12 @@ const CustomizedHits = ({hits, ...props}) => {
   }
   if (props.match.url.startsWith('/tcct/suatho')) {
     ThoBlock = <div>
-      <ShowFormTho thoObj={hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
-        // [X] NOTE: this is a trick, using key to force a re-render
-        // this case trying to use other than one-source-of-truth with is
-        // NOT very welcome. The form tho can be either a blank form to input
-        // new tho or a form with data from existed tho to edit
-        key={`trigger_render_form_${selectedIndex}`}
+      <ShowFormTho thoObj={props.modifiedTho || hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
         user={props.user}
         modifyTho={props.modifyTho}
+        busy={props.busy}
+        refreshHits={props.refreshHits}
       />
-      {/* <h1>{hits[_targetID].index}</h1> */}
     </div>
   }
 
@@ -236,8 +234,7 @@ const CustomizedHits = ({hits, ...props}) => {
           <ConnectedPagination ellipsis maxButtons={5} showList={shouldShow}
             defaultRefinement={currentPage}
             // using the same trick with fomrtho to force a re-render
-            key={`trigger_render_page_${selectedIndex}`
-          }
+            // key={`trigger_render_page_${selectedIndex}`}
           />
         </Col>
         <Clearfix visibleXsBlock/>
@@ -263,14 +260,6 @@ const handleHitsState = compose(
   })
 );
 
-// const hitsLifeCycle = lifecycle({
-//   componentDidUpdate() {
-//     if (this.props.thoIndex.hits.length === 0) {
-//       this.props.hitsToStore(this.props.hits);
-//     }
-//   }
-// });
-
 const EnhancedHits = compose(
   // hitsLifeCycle,
   handleHitsState,
@@ -288,7 +277,8 @@ const ConnectedHits = connectHits(({ hits, selectedID, ...props }) =>
 const IndexTho = (props) => {
   const { ...passProps } = props;
   return (
-    <InstantSearch {...algoliaConfig}>
+    // [] NOTE: InstantSearch refresh prop not act as to trigger a refresh
+    <InstantSearch {...algoliaConfig} >
       <ConnectedHits {...passProps} />
     </InstantSearch>
   );

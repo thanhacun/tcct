@@ -2,47 +2,43 @@ import { randomRange } from '../utils/common_tools';
 const numberOfTho = 65;
 
 const tcctInitialState = {
-  tho: [],
+  // tho: [],
   busy: false,
+  modifiedTho: null,
+  refreshHits: false,
   thoIndex: {
     selectedIndex: 1,
-    // selectedID: null,
     hit: null,
-    // isShowed: false,
     defaultPerPage: 12,
     perPageItems: [{value: 1}],
-    thoToPrint: null,
-    randomIndex: null,
+    // thoToPrint: null,
+    // randomIndex: null,
     currentSearch: "",
     pageTitle: "KBM",
-    hits: []
+    hits: [],
+    maxIndex: null
   }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
   const { type, payload } = action;
   switch (type) {
-    case 'ADD_THO_PENDING':
-      return { ...state }
-    case 'ADD_THO_FULFILLED':
+    case 'MODIFY_THO_PENDING':
+      return { ...state, busy: true, refreshHits: false }
+    case 'MODIFY_THO_FULFILLED':
       const { modifiedTho, update } = payload.data;
       if (update === 'deleted') { //delete a Tho
-        return { ...state, tho: state.tho.filter(tho => {
-          return tho.index !== modifiedTho.index;
-        })};
+        return { ...state, busy: false, modifiedTho, refreshHits: true};
       } else {
         if (update === 'updated'){ // update a Tho
-          return { ...state, tho: state.tho.map(tho => {
-            return (tho.index !== modifiedTho.index) ? tho : modifiedTho
-          })};
+          return { ...state, busy: false, modifiedTho, refreshHits: true};
         } else { // add a new Tho
-          return { ...state, tho: [...state.tho, modifiedTho] };
+          return { ...state, busy: false, modifiedTho, refreshHits: true};
         }
       }
-    case 'ADD_THO_REJECTED':
-      return { ...state }
+    case 'MODIFY_THO_REJECTED':
+      return { ...state, busy: false }
     case 'SAVE_DRAFT_THO':
       return { ...state, draft: payload }
-
     case 'GET_THO_PENDING':
       return { ...state, busy: true }
     case 'GET_THO_FULFILLED':

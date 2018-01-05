@@ -7,6 +7,7 @@ import SocialButton from './SocialButton';
 import { Jumbotron, Form, FormGroup, ControlLabel, FormControl,
   Button, Alert } from 'react-bootstrap';
 import { localLogin, getUserInfo, socialLogin } from '../actions/userActions';
+import FontAwesome from '@fortawesome/react-fontawesome';
 
 //TODO: understand clearly dummy and smart components
 
@@ -49,16 +50,16 @@ class UserLogin extends Component {
     return (
       <div className="container">
         <Jumbotron className="text-center">
-          <h2><span className="fa fa-sign-in"></span> Login or Register with:</h2>
+          <h2><FontAwesome icon={`sign-in-alt`}/> Login or Register with:</h2>
           <SocialButton provider="facebook"
             onLoginSuccess={(response) => this.props.socialLogin(response)}
             onLoginFailure={(response) => this.loginFailure(response)}
-            className="btn btn-primary"><span className="fa fa-facebook"></span> Facebook
+            className="btn btn-primary"><FontAwesome icon={[`fab`, `facebook`]}/> Facebook
           </SocialButton>
           <SocialButton provider="google"
             onLoginSuccess={(response) => this.props.socialLogin(response)}
             onLoginFailure={(response) => this.loginFailure(response)}
-            className="btn btn-danger" ><span className="fa fa-google-plus"> Google</span>
+            className="btn btn-danger" ><FontAwesome icon={[`fab`, `google-plus`]} /> Google
           </SocialButton>
 
         </Jumbotron>

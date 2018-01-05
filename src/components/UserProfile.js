@@ -6,13 +6,14 @@ import { socialConnect, socialUnlink, logout } from '../actions/userActions';
 
 import SocialButton from './SocialButton';
 import { Col, Row, Well } from 'react-bootstrap';
+import FontAwesome from '@fortawesome/react-fontawesome';
 
 const SocialUserInfo = ({provider, bsStyle, ...props}) =>
   {
     const {id, token, email, name} = props;
     return (
       <Well>
-        <h3 className={`text-${bsStyle}`}><span className={`fa fa-${provider}`}></span>{` ${provider}`}</h3>
+        <h3 className={`text-${bsStyle}`}><FontAwesome icon={[`fab`, `${provider}`]}/> {` ${provider}`}</h3>
         {(token)
           ? <p>
             <strong>id</strong>: {id} <br/>
@@ -23,13 +24,13 @@ const SocialUserInfo = ({provider, bsStyle, ...props}) =>
             <SocialButton provider={provider}
               onLoginSuccess={(response) => props.socialUnlink(response)}
               //onLoginFailure
-              className="btn btn-danger"><span className={`fa fa-${provider}`}></span> Unlink
+              className="btn btn-danger"><FontAwesome icon={[`fab`, `${provider}`]}/> Unlink
             </SocialButton>
           </p>
           : <SocialButton provider={provider}
             onLoginSuccess={(response) => props.socialConnect(response, props.localEmail)}
             // onLoginFailure={handleSocialLoginFailer}
-            className={`btn btn-${bsStyle}`}><span className={`fa fa-${provider}`}></span> Connect
+            className={`btn btn-${bsStyle}`}><FontAwesome icon={[`fab`, `${provider}`]}/> Connect
           </SocialButton> }
         </Well>
     )

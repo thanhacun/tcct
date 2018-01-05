@@ -1,18 +1,27 @@
 import React from 'react';
-import { compose, withHandlers, withState } from 'recompose';
-import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button } from 'react-bootstrap';
+import { compose, withHandlers, withState, branch } from 'recompose';
+import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button,
+  OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import RichTextEditor from '../RichTextEditor';
+import busyLoading from '../busyLoading';
+import FontAwesome from '@fortawesome/react-fontawesome';
 
 const FormTho = ({dataState, selectedIndex, ...props}) => {
   // either load data from tho to edit or allow to input new data
-  // const newTho = {index: '', title: '', content: '', footer: '', imgUrl: ''}
-  // const tho = (existedTho) ? existedTho : props.tho;
-  const { index, title, content, footer, imgUrl } = dataState;
-  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, user } = props;
+  const { index, title, content, footer, imgUrl, changed } = dataState;
+  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onKeyPress, onRefresh, user } = props;
   const isAdmin = user && user.userEmail && user.role.admin;
+  // [] NOTE: shallow compare, may affect performance
+  const isChange = !(JSON.stringify(dataState) === JSON.stringify(props.selectedTho));
+  const refreshTip = (
+    <Tooltip id="refreshTip">
+      <strong>May need to REFRESH</strong> after saving new data
+    </Tooltip>
+  );
+
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={onSubmit} >
       <FormGroup>
         <ControlLabel>STT</ControlLabel>
         <FormControl type="number" name="index" value={index}
@@ -29,6 +38,7 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
           <RichTextEditor label="Code HTML tự sinh"
             updateRawHTML={(rawHTML) => updateRawHTML(rawHTML)}
             value={content}
+            // changeCallback={onChange}
             // syncHTMLtoEditor={selectedIndex >= 1}
             // syncHTMLtoEditor={true}
           />
@@ -44,10 +54,17 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
           onChange={onChange} ></FormControl>
       </FormGroup>
       <ButtonToolbar>
-        <Button type="submit" bsStyle="warning" disabled={!isAdmin}>Thêm/Lưu</Button>
-        <Button bsStyle="danger" onClick={onDelete}
-          disabled={!isAdmin}>Xóa</Button>
-        <Button bsStyle="primary" type="reset" onClick={onReset}>Reset</Button>
+        <Button type="submit" bsStyle="warning" disabled={!isAdmin || !isChange}>
+          <FontAwesome icon={`save`} /></Button>
+        <Button bsStyle="danger" onClick={onDelete} disabled={!isAdmin}>
+          <FontAwesome icon={`trash-alt`}/></Button>
+        <Button bsStyle="primary" type="reset" onClick={onReset}>
+          <FontAwesome icon={`times`}/></Button>
+        { props.refreshHits &&
+          <OverlayTrigger placement="top" overlay={refreshTip}>
+            <Button bsStyle="info" onClick={onRefresh}><FontAwesome icon={`sync-alt`}/></Button>
+          </OverlayTrigger>
+        }
       </ButtonToolbar>
     </Form>
   )
@@ -55,14 +72,13 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
 
 const formHandlers = withHandlers({
   onChange: props => (e) => {
-    props.updateTho({...props.dataState, [e.target.name]: e.target.value})
+    props.updateTho({...props.dataState, [e.target.name]: e.target.value});
   },
   onSubmit: props => (e) => {
     e.preventDefault();
     if (props.user.userEmail && props.user.role.admin){
-      props.modifyTho(props.dataState, 'save')
+      props.modifyTho(props.dataState, 'save');
       //[] TODO: reset after adding new file, not reset if update
-      // props.onReset();
     }
   },
   onDelete: props => (e) => {
@@ -71,10 +87,20 @@ const formHandlers = withHandlers({
       props.modifyTho(props.dataState, 'delete');
     }
   },
-  onReset: props => () => props.updateTho({index: '', title: '', content: '', footer: '', imgUrl: ''}),
+  onReset: props => () => {
+    props.updateTho({...props.selectedTho});
+  },
   updateRawHTML: props => (rawHTML) => props.updateTho({...props.dataState, content: rawHTML}),
+  onRefresh: props => () => window.location.reload()
 });
 
-const thoState = withState('dataState', 'updateTho', props => props.selectedTho);
+const thoState = compose(
+  withState('dataState', 'updateTho', props => props.selectedTho),
+  formHandlers
+);
 
-export default compose(thoState, formHandlers)(FormTho);
+export default branch(
+  (props) => props.busy,
+  busyLoading,
+  thoState
+  )(FormTho);
