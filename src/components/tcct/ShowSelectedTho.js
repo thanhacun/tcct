@@ -18,7 +18,6 @@ const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
     }
   };
   // Manipulate document title
-  // document.title = thoObj && `KBM - ${thoObj.title}`;
   const { thoTitle } = props;
   document.title = thoTitle;
 

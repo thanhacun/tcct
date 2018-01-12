@@ -138,11 +138,11 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
           disabled={!props.isAdmin}><FontAwesome icon={`edit`} /></Button>
         </ButtonGroup>
       </Default>
-    <ConnectedHighlight attributeName="content" hit={thoObj} {...props}/>
-    {thoObj.mediaUrl &&
-      <ReactPlayer url={thoObj.mediaUrl} controls/>
-    }
-  </div>
+      <ConnectedHighlight attributeName="content" hit={thoObj} {...props}/>
+      {thoObj.mediaUrl &&
+        <ReactPlayer url={thoObj.mediaUrl} controls width={`100%`}/>
+      }
+    </div>
 )
 });
 
