@@ -8,6 +8,7 @@ import { connectSearchBox, connectHits, connectHighlight, connectPagination,
 import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
+import ReactPlayer from 'react-player';
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
@@ -131,15 +132,16 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
     <div>
       <Default>
         <ButtonGroup className="hidden-print">
-          {/* <Button disabled><FontAwesome name="chevron-left" /></Button> */}
           <Button href="/tcct/xemtho/random"><FontAwesome icon={'random'} /></Button>
           <Button onClick={() => window.print()}><FontAwesome icon={`print`} /></Button>
           <Button onClick={() => props.goTo(`/tcct/suatho/${thoObj.index}`)}
           disabled={!props.isAdmin}><FontAwesome icon={`edit`} /></Button>
-          {/* <Button disabled><FontAwesome name="chevron-right" /></Button> */}
         </ButtonGroup>
       </Default>
     <ConnectedHighlight attributeName="content" hit={thoObj} {...props}/>
+    {thoObj.mediaUrl &&
+      <ReactPlayer url={thoObj.mediaUrl} controls/>
+    }
   </div>
 )
 });
@@ -151,10 +153,8 @@ const ShowFormTho = connectStats(showSelectedTho(({nbHits, thoObj, ...props}) =>
         // this case trying to use other than one-source-of-truth with is
         // NOT very welcome. The form tho can be either a blank form to input
         // new tho or a form with data from existed tho to edit
-        // key={`trigger_render_form_${selectedIndex}`}
         key={`trigger_render_form_${thoObj.index}`}
-        {...props}
-        nbHits={nbHits}
+        {...props} nbHits={nbHits}
     />
 ))
 
@@ -187,13 +187,12 @@ const ShowJumbotron = () => {
   )
 }
 
-const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: ''};
-
 const CustomizedHits = ({hits, ...props}) => {
   const { defaultPerPage, perPageItems, hitClick, showList, toggle, selectHit,
     searchFocus, selectedIndex, goTo } = props;
   // show only if there is more than 1 hit
   const shouldShow = (hits.length >= 1) && showList;
+  const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: '', mediaUrl: ''};
 
   // [X] TODO: Taking care of id when searching - number of hits return not in sequence!
   const currentID = (selectedIndex -1) % defaultPerPage;
@@ -236,8 +235,6 @@ const CustomizedHits = ({hits, ...props}) => {
           />
           <ConnectedPagination ellipsis maxButtons={5} showList={shouldShow}
             defaultRefinement={currentPage}
-            // using the same trick with fomrtho to force a re-render
-            // key={`trigger_render_page_${selectedIndex}`}
           />
         </Col>
         <Clearfix visibleXsBlock/>

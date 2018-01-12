@@ -9,7 +9,7 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 
 const FormTho = ({dataState, selectedIndex, ...props}) => {
   // either load data from tho to edit or allow to input new data
-  const { index, title, content, footer, imgUrl } = dataState;
+  const { index, title, content, footer, imgUrl, mediaUrl } = dataState;
   const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onRefresh, user } = props;
   const isAdmin = user && user.userEmail && user.role.admin;
   // [] NOTE: shallow compare, may affect performance
@@ -49,15 +49,18 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
       </FormGroup>
       <FormGroup>
         <ControlLabel>Hình minh họa</ControlLabel>
-        <FormControl type="text" name="imgUrl" value={imgUrl}
-          onChange={onChange} ></FormControl>
+        <FormControl type="text" name="imgUrl" value={imgUrl} onChange={onChange} ></FormControl>
+      </FormGroup>
+      <FormGroup>
+        <ControlLabel>Media link (YouTube, SoundCloud)</ControlLabel>
+        <FormControl type="text" name="mediaUrl" value={mediaUrl} onChange={onChange} ></FormControl>
       </FormGroup>
       <ButtonToolbar>
         <Button type="submit" bsStyle="warning" disabled={!isAdmin || !isChange}>
           <FontAwesome icon={`save`} /></Button>
         <Button bsStyle="danger" onClick={onDelete} disabled={!isAdmin}>
           <FontAwesome icon={`trash-alt`}/></Button>
-        <Button bsStyle="primary" type="reset" onClick={onReset}>
+        <Button bsStyle="primary" type="reset" onClick={onReset} disabled={!isChange}>
           <FontAwesome icon={`times`}/></Button>
         { props.refreshHits &&
           <OverlayTrigger placement="top" overlay={refreshTip}>
@@ -76,6 +79,7 @@ const formHandlers = withHandlers({
   onSubmit: props => (e) => {
     e.preventDefault();
     if (props.user.userEmail && props.user.role.admin){
+      console.log(props.dataState);
       props.modifyTho(props.dataState, 'save');
       //[] TODO: reset after adding new file, not reset if update
     }
