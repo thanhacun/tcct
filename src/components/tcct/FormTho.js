@@ -79,9 +79,8 @@ const formHandlers = withHandlers({
   onSubmit: props => (e) => {
     e.preventDefault();
     if (props.user.userEmail && props.user.role.admin){
-      console.log(props.dataState);
-      props.modifyTho(props.dataState, 'save');
-      //[] TODO: reset after adding new file, not reset if update
+      //[X] TODO: index has to be the next highest number
+      props.modifyTho({...props.dataState, index: props.dataState.index || props.nbHits + 1}, 'save');
     }
   },
   onDelete: props => (e) => {

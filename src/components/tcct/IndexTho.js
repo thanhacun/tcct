@@ -127,6 +127,24 @@ const HitsList = ({hits, selectedIndex, ...props}) => {
     )
 };
 
+const MediaPlayer = compose(
+  withState('busy', 'busyHandler', true),
+  withHandlers({
+    onReady: props => () => {
+      props.busyHandler(false);
+    }
+  })
+)(({busy, busyHandler, ...props}) => {
+  return (
+    <div>
+      {busy &&
+          <span><FontAwesome icon={`spinner`} spin size="2x"/> Loading media...</span>
+      }
+      <ReactPlayer {...props}/>
+    </div>
+  )
+});
+
 const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
   return (
     <div>
@@ -140,7 +158,7 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
       </Default>
       <ConnectedHighlight attributeName="content" hit={thoObj} {...props}/>
       {thoObj.mediaUrl &&
-        <ReactPlayer url={thoObj.mediaUrl} controls width={`100%`}/>
+        <MediaPlayer url={thoObj.mediaUrl} controls width={`100%`} />
       }
     </div>
 )
