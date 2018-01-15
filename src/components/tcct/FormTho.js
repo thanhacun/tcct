@@ -30,7 +30,7 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
       </FormGroup>
       <FormGroup>
         <ControlLabel>Tiêu đề</ControlLabel>
-        <FormControl type="text" value={title} name="title"
+        <FormControl type="text" value={title || ''} name="title"
           onChange={onChange} required></FormControl>
         </FormGroup>
         <FormGroup>
@@ -44,16 +44,16 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
       </FormGroup>
       <FormGroup>
         <ControlLabel>Ghi chú</ControlLabel>
-        <FormControl type="text" value={footer} name="footer"
+        <FormControl type="text" value={footer || ''} name="footer"
           onChange={onChange} ></FormControl>
       </FormGroup>
       <FormGroup>
         <ControlLabel>Hình minh họa</ControlLabel>
-        <FormControl type="text" name="imgUrl" value={imgUrl} onChange={onChange} ></FormControl>
+        <FormControl type="text" name="imgUrl" value={imgUrl || ''} onChange={onChange} ></FormControl>
       </FormGroup>
       <FormGroup>
         <ControlLabel>Media link (YouTube, SoundCloud)</ControlLabel>
-        <FormControl type="text" name="mediaUrl" value={mediaUrl} onChange={onChange} ></FormControl>
+        <FormControl type="text" name="mediaUrl" value={mediaUrl || ''} onChange={onChange} ></FormControl>
       </FormGroup>
       <ButtonToolbar>
         <Button type="submit" bsStyle="warning" disabled={!isAdmin || !isChange}>
