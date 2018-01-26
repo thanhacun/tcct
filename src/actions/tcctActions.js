@@ -14,10 +14,10 @@ export function saveDraftTho(newTho){
   }
 };
 
-export function getTho(){
+export function getTho(index){
   return {
     type: 'GET_THO',
-    payload: axios.get('/api/tcct/tho')
+    payload: axios.get(`/api/tcct/tho/${index}`)
   }
 };
 
@@ -27,6 +27,13 @@ export function selectHit(hit) {
     payload: {selectedIndex: hit.index, hit, pageTitle: `KBM - ${hit.title}`}
   }
 };
+
+export function getThoComments(thoIndex) {
+  return {
+    type: 'GET_THO_COMMENTS',
+    payload: axios.get(`/api/tcct/tho/${thoIndex}/comments`)
+  }
+}
 
 // export function pathToIndex(selectedIndex) {
 //   return {

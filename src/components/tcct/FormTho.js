@@ -1,16 +1,16 @@
 import React from 'react';
-import { compose, withHandlers, withState, branch } from 'recompose';
+import { compose, withHandlers, withState } from 'recompose';
 import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button,
-  OverlayTrigger, Tooltip } from 'react-bootstrap';
+  OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap';
 
 import RichTextEditor from '../RichTextEditor';
-import busyLoading from '../busyLoading';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
-const FormTho = ({dataState, selectedIndex, ...props}) => {
+// NOTE: busyLoading is handled in IndexTho
+const FormTho = ({dataState, fieldLock, selectedIndex, ...props}) => {
   // either load data from tho to edit or allow to input new data
-  const { index, title, content, footer, imgUrl, mediaUrl } = dataState;
-  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onRefresh, user } = props;
+  const { index, title, content, footer, imgUrl, mediaUrl, postedUser} = dataState;
+  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onRefresh, unlockField, user } = props;
   const isAdmin = user && user.userEmail && user.role.admin;
   // [] NOTE: shallow compare, may affect performance
   const isChange = !(JSON.stringify(dataState) === JSON.stringify(props.selectedTho));
@@ -22,12 +22,17 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
 
   return (
     <Form onSubmit={onSubmit} >
-      <FormGroup>
-        <ControlLabel>STT</ControlLabel>
-        <FormControl type="number" name="index" value={index}
-          placeholder={props.nbHits + 1 || 0} onChange={onChange} required
-          disabled={!!props.nbHits}></FormControl>
-      </FormGroup>
+        <FormGroup>
+          <ControlLabel>STT</ControlLabel>
+          <InputGroup>
+            <InputGroup.Button>
+              <Button onClick={unlockField}><FontAwesome icon={fieldLock ? `toggle-off` : `toggle-on`}/></Button>
+            </InputGroup.Button>
+            <FormControl type="number" name="index" value={index}
+              placeholder={props.nbHits + 1 || 0} onChange={onChange} required
+              disabled={fieldLock} ></FormControl>
+          </InputGroup>
+        </FormGroup>
       <FormGroup>
         <ControlLabel>Tiêu đề</ControlLabel>
         <FormControl type="text" value={title || ''} name="title"
@@ -55,6 +60,7 @@ const FormTho = ({dataState, selectedIndex, ...props}) => {
         <ControlLabel>Media link (YouTube, SoundCloud)</ControlLabel>
         <FormControl type="text" name="mediaUrl" value={mediaUrl || ''} onChange={onChange} ></FormControl>
       </FormGroup>
+      <strong>{`Posted by: ${(postedUser && postedUser.local && postedUser.local.email) || user.userEmail}`}</strong>
       <ButtonToolbar>
         <Button type="submit" bsStyle="warning" disabled={!isAdmin || !isChange}>
           <FontAwesome icon={`save`} /></Button>
@@ -80,7 +86,12 @@ const formHandlers = withHandlers({
     e.preventDefault();
     if (props.user.userEmail && props.user.role.admin){
       //[X] TODO: index has to be the next highest number
-      props.modifyTho({...props.dataState, index: props.dataState.index || props.nbHits + 1}, 'save');
+      props.modifyTho({
+        ...props.dataState,
+        index: props.dataState.index || props.nbHits + 1,
+        postedUser: props.user._id,
+        _id: props.dataState._id
+      }, 'save');
     }
   },
   onDelete: props => (e) => {
@@ -93,16 +104,12 @@ const formHandlers = withHandlers({
     props.updateTho({...props.selectedTho});
   },
   updateRawHTML: props => (rawHTML) => props.updateTho({...props.dataState, content: rawHTML}),
-  onRefresh: props => () => window.location.reload()
+  onRefresh: props => () => window.location.reload(),
+  unlockField: props => () => props.toggleLock(currentState => !currentState)
 });
 
-const thoState = compose(
+export default compose(
   withState('dataState', 'updateTho', props => props.selectedTho),
+  withState('fieldLock', 'toggleLock', true),
   formHandlers
-);
-
-export default branch(
-  (props) => props.busy,
-  busyLoading,
-  thoState
-  )(FormTho);
+)(FormTho);

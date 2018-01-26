@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 
 import {selectHit, getTho, modifyTho, hitsToStore} from '../../actions/tcctActions';
 import IndexTho from './IndexTho';
@@ -18,7 +19,7 @@ const ShowTho = props => {
 
 const mapStateToProps = store => store.tcct;
 const mapDispatchToProps = dispatch => ({
-  getTho: () => dispatch(getTho()),
+  getTho: (index) => dispatch(getTho(index)),
   selectHit: (hit) => {
     dispatch(selectHit(hit));
     dispatch(push(`${hit.index}`));
@@ -28,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
   goTo: (path) => dispatch(push(path))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowTho);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ShowTho));

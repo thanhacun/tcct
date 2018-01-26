@@ -16,7 +16,11 @@ const tcctInitialState = {
     currentSearch: "",
     pageTitle: "KBM",
     hits: [],
-    maxIndex: null
+    maxIndex: null,
+    comments: [
+      {postedTime: new Date(), username: "thanhacun@yahoo.com", comment: "Bài thơ cảm động quá!"},
+      {postedTime: new Date(), username: "helloworld@gmail.com", comment: "Cảm ơn tác giả"}
+    ]
   }};
 
 const tcct = (state=tcctInitialState, action, userData) => {
@@ -25,14 +29,14 @@ const tcct = (state=tcctInitialState, action, userData) => {
     case 'MODIFY_THO_PENDING':
       return { ...state, busy: true, refreshHits: false }
     case 'MODIFY_THO_FULFILLED':
-      const { modifiedTho, update } = payload.data;
+      const { modifiedTho: tho, update } = payload.data;
       if (update === 'deleted') { //delete a Tho
-        return { ...state, busy: false, modifiedTho, refreshHits: true};
+        return { ...state, busy: false, tho, refreshHits: true};
       } else {
         if (update === 'updated'){ // update a Tho
-          return { ...state, busy: false, modifiedTho, refreshHits: true};
+          return { ...state, busy: false, tho, refreshHits: true};
         } else { // add a new Tho
-          return { ...state, busy: false, modifiedTho, refreshHits: true};
+          return { ...state, busy: false, tho, refreshHits: true};
         }
       }
     case 'MODIFY_THO_REJECTED':
@@ -40,10 +44,14 @@ const tcct = (state=tcctInitialState, action, userData) => {
     case 'SAVE_DRAFT_THO':
       return { ...state, draft: payload }
     case 'GET_THO_PENDING':
+    case 'GET_THO_COMMENTS_PENDING':
       return { ...state, busy: true }
     case 'GET_THO_FULFILLED':
-      return { ...state, busy: false, tho: payload.data }
+      return { ...state, busy: false, tho: payload.data}
+    case 'GET_THO_COMMENTS_FULFILLED':
+      return { ...state, busy: false, thoIndex: {...state.thoIndex, ...payload}}
     case 'GET_THO_REJECTED':
+    case 'GET_THO_COMMENTS_REJECTED':
       return { ...state, busy: false };
     case 'SELECT_HIT':
       return { ...state, thoIndex: {...state.thoIndex, ...payload}};
@@ -59,6 +67,7 @@ const tcct = (state=tcctInitialState, action, userData) => {
       }}
     case 'HITS_TO_STORE':
       return { ...state, thoIndex: {...state.thoIndex, ...payload}}
+
     default:
       return { ...state, user: userData };
   }

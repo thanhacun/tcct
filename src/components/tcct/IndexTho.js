@@ -12,7 +12,7 @@ import ReactPlayer from 'react-player';
 import renderHTML from 'react-render-html';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
-import { branch, compose, withState, withHandlers } from 'recompose';
+import { branch, compose, withState, withHandlers, lifecycle } from 'recompose';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
@@ -145,7 +145,25 @@ const MediaPlayer = compose(
   )
 });
 
+const ShowComments = ({comments}) => {
+  const commentsList = comments.map((comment, index) => {
+    return (
+      <li key={`comment_${index}`}>
+        <strong>{`${comment.username} posted at: ${comment.postedTime.toLocaleString()}`}</strong>
+        <p>{comment.comment}</p>
+      </li>
+    )
+  })
+  return (
+    <div>
+      <hr />
+      <h3>Bình luận</h3>
+      <ul>{commentsList}</ul>
+    </div>
+  )
+}
 const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
+  const {comments} = props;
   return (
     <div>
       <Default>
@@ -160,6 +178,7 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
       {thoObj.mediaUrl &&
         <MediaPlayer url={thoObj.mediaUrl} controls width={`100%`} />
       }
+      <ShowComments comments={comments}/>
     </div>
 )
 });
@@ -174,7 +193,19 @@ const ShowFormTho = connectStats(showSelectedTho(({nbHits, thoObj, ...props}) =>
         key={`trigger_render_form_${thoObj.index}`}
         {...props} nbHits={nbHits}
     />
-))
+));
+
+const EnhancedShowFormTho = compose(
+  lifecycle({
+    componentDidMount() {
+      this.props.getTho(this.props.thoIndex);
+    }
+  }),
+  branch(
+    props => props.busy,
+    busyLoading
+  )
+)(ShowFormTho);
 
 const ShowJumbotron = () => {
   const bgImages = ['https://i.imgur.com/zFku8m1.jpg', 'https://i.imgur.com/BTS3ukW.jpg?2'];
@@ -210,30 +241,37 @@ const CustomizedHits = ({hits, ...props}) => {
     searchFocus, selectedIndex, goTo } = props;
   // show only if there is more than 1 hit
   const shouldShow = (hits.length >= 1) && showList;
-  const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: '', mediaUrl: ''};
-
   // [X] TODO: Taking care of id when searching - number of hits return not in sequence!
-  const currentID = (selectedIndex -1) % defaultPerPage;
+  const currentID = (selectedIndex - 1) % defaultPerPage;
   const _targetID = hits.reduce((initialID, hit, currentHitID, theArray) => {
       return (hit.index === selectedIndex) ? currentHitID : initialID;
     }, (currentID >= hits.length) ? 0 : currentID);
   const currentPage = Math.ceil(selectedIndex / defaultPerPage);
   const thoTitle = (hits[_targetID]) ? hits[_targetID].title : '';
 
+  const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: '', mediaUrl: '', postedUser: '', userEmail: ''};
   let ThoBlock = null;
   if (props.match.url.startsWith('/tcct/xemtho')) {
     ThoBlock = <ShowDisplayTho thoObj={hits[_targetID]} goTo={goTo}
-      thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin} />
+      thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin}
+      comments={props.thoIndex.comments}
+    />
   }
   if (props.match.url.startsWith('/tcct/suatho')) {
-    ThoBlock = <div>
-      <ShowFormTho thoObj={props.modifiedTho || hits[_targetID] || thoTemp} thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
+    ThoBlock = <EnhancedShowFormTho
+        // thoObj={props.modifiedTho || hits[_targetID] || thoTemp}
+        thoObj={props.tho || thoTemp}
+        thoTitle={`KBM - Sửa thơ - ${thoTitle}`}
         user={props.user}
         modifyTho={props.modifyTho}
         busy={props.busy}
         refreshHits={props.refreshHits}
+        getTho={props.getTho}
+        thoIndex={selectedIndex}
+        // [] NOTE: Problem with Update Blocking
+        // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+        key={`trigger_render_${selectedIndex}`}
       />
-    </div>
   }
 
   return (
@@ -293,10 +331,10 @@ const ConnectedHits = connectHits(({ hits, selectedID, ...props }) =>
 );
 
 const IndexTho = (props) => {
-  const { ...passProps } = props;
+  const { refresh, ...passProps } = props;
   return (
-    // [] NOTE: InstantSearch refresh prop not act as to trigger a refresh
-    <InstantSearch {...algoliaConfig} >
+    // [] NOTE: InstantSearch refresh prop not act as a trigger to refresh
+    <InstantSearch {...algoliaConfig} refresh={refresh}>
       <ConnectedHits {...passProps} />
     </InstantSearch>
   );
