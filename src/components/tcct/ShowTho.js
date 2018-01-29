@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { withRouter } from 'react-router-dom';
 
-import {selectHit, getTho, modifyTho, hitsToStore} from '../../actions/tcctActions';
+import {selectHit, getTho, modifyTho, hitsToStore, getThoComments, postThoComment} from '../../actions/tcctActions';
 import IndexTho from './IndexTho';
 
 // Container
@@ -26,7 +26,9 @@ const mapDispatchToProps = dispatch => ({
   },
   modifyTho: (modifiedTho, modifyAction) => dispatch(modifyTho(modifiedTho, modifyAction)),
   hitsToStore: (hits) => dispatch(hitsToStore(hits)),
-  goTo: (path) => dispatch(push(path))
+  goTo: (path) => dispatch(push(path)),
+  getThoComments: (thoIndex) => dispatch(getThoComments(thoIndex)),
+  postThoComment: (thoIndex, postedComment, commentAction) => dispatch(postThoComment(thoIndex, postedComment, commentAction))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ShowTho));

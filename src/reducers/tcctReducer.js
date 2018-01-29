@@ -2,7 +2,8 @@ import { randomRange } from '../utils/common_tools';
 const numberOfTho = 65;
 
 const tcctInitialState = {
-  // tho: [],
+  tho: null,
+  comments: [],
   busy: false,
   modifiedTho: null,
   refreshHits: false,
@@ -27,6 +28,7 @@ const tcct = (state=tcctInitialState, action, userData) => {
   const { type, payload } = action;
   switch (type) {
     case 'MODIFY_THO_PENDING':
+    case 'POST_COMMENT_PENDING':
       return { ...state, busy: true, refreshHits: false }
     case 'MODIFY_THO_FULFILLED':
       const { modifiedTho: tho, update } = payload.data;
@@ -39,7 +41,15 @@ const tcct = (state=tcctInitialState, action, userData) => {
           return { ...state, busy: false, tho, refreshHits: true};
         }
       }
+    // case 'POST_COMMENT_FULFILLED':
+    //   // const { postedComment, update } = payload.data;
+    //   if (payload.data.update === 'deleted') {
+    //     return { ...state, busy: false}
+    //   } else {
+    //     return { ...state, busy: false}
+    //   }
     case 'MODIFY_THO_REJECTED':
+    case 'POST_COMMENT_REJECTED':
       return { ...state, busy: false }
     case 'SAVE_DRAFT_THO':
       return { ...state, draft: payload }
@@ -49,7 +59,8 @@ const tcct = (state=tcctInitialState, action, userData) => {
     case 'GET_THO_FULFILLED':
       return { ...state, busy: false, tho: payload.data}
     case 'GET_THO_COMMENTS_FULFILLED':
-      return { ...state, busy: false, thoIndex: {...state.thoIndex, ...payload}}
+    case 'POST_COMMENT_FULFILLED':
+      return { ...state, busy: false, comments: payload.data.comments}
     case 'GET_THO_REJECTED':
     case 'GET_THO_COMMENTS_REJECTED':
       return { ...state, busy: false };

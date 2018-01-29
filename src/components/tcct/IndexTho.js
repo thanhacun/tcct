@@ -17,8 +17,9 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 
 import mediaQuery, {Mobile, Default} from './mediaQuery';
 import showSelectedTho from './ShowSelectedTho';
-import FormTho from './FormTho';
 
+import FormTho from './FormTho';
+import Comments from './Comments';
 import busyLoading from '../busyLoading';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
@@ -145,25 +146,7 @@ const MediaPlayer = compose(
   )
 });
 
-const ShowComments = ({comments}) => {
-  const commentsList = comments.map((comment, index) => {
-    return (
-      <li key={`comment_${index}`}>
-        <strong>{`${comment.username} posted at: ${comment.postedTime.toLocaleString()}`}</strong>
-        <p>{comment.comment}</p>
-      </li>
-    )
-  })
-  return (
-    <div>
-      <hr />
-      <h3>Bình luận</h3>
-      <ul>{commentsList}</ul>
-    </div>
-  )
-}
 const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
-  const {comments} = props;
   return (
     <div>
       <Default>
@@ -178,7 +161,11 @@ const ShowDisplayTho = showSelectedTho(({thoObj, ...props}) =>{
       {thoObj.mediaUrl &&
         <MediaPlayer url={thoObj.mediaUrl} controls width={`100%`} />
       }
-      <ShowComments comments={comments}/>
+      <hr />
+      <Comments getThoComments={props.getThoComments} postThoComment={props.postThoComment}
+        thoIndex={thoObj.index || 0} user={props.user} comments={props.comments}
+        key={`trigger_render_${thoObj.index}`}
+      />
     </div>
 )
 });
@@ -252,9 +239,14 @@ const CustomizedHits = ({hits, ...props}) => {
   const thoTemp = {index: '', title: '', content: '', footer: '', imgUrl: '', mediaUrl: '', postedUser: '', userEmail: ''};
   let ThoBlock = null;
   if (props.match.url.startsWith('/tcct/xemtho')) {
-    ThoBlock = <ShowDisplayTho thoObj={hits[_targetID]} goTo={goTo}
-      thoTitle={`KBM - Xem thơ - ${thoTitle}`} isAdmin={props.user.role && props.user.role.admin}
-      comments={props.thoIndex.comments}
+    ThoBlock = <ShowDisplayTho
+      thoObj={hits[_targetID]} goTo={goTo}
+      thoTitle={`KBM - Xem thơ - ${thoTitle}`}
+      isAdmin={props.user.role && props.user.role.admin}
+      getThoComments={props.getThoComments}
+      postThoComment={props.postThoComment}
+      user={props.user}
+      comments={props.comments}
     />
   }
   if (props.match.url.startsWith('/tcct/suatho')) {

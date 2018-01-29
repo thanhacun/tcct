@@ -35,6 +35,13 @@ export function getThoComments(thoIndex) {
   }
 }
 
+export function postThoComment(thoIndex, postedComment, commentAction) {
+  return {
+    type: 'POST_COMMENT',
+    payload: axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction})
+  }
+}
+
 // export function pathToIndex(selectedIndex) {
 //   return {
 //     type: 'PATH_TO_INDEX',
