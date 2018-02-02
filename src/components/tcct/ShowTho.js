@@ -12,7 +12,7 @@ const ShowTho = props => {
   const { ...indexActions } = props;
   return (
     <div>
-      <IndexTho { ...indexProps } { ...indexActions }/>
+      <IndexTho { ...indexProps } { ...indexActions } />
     </div>
   )
 };

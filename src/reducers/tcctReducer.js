@@ -60,7 +60,7 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, busy: false, tho: payload.data}
     case 'GET_THO_COMMENTS_FULFILLED':
     case 'POST_COMMENT_FULFILLED':
-      return { ...state, busy: false, comments: payload.data.comments}
+      return { ...state, busy: false, comments: payload.data.comments.reverse()}
     case 'GET_THO_REJECTED':
     case 'GET_THO_COMMENTS_REJECTED':
       return { ...state, busy: false };
@@ -78,7 +78,6 @@ const tcct = (state=tcctInitialState, action, userData) => {
       }}
     case 'HITS_TO_STORE':
       return { ...state, thoIndex: {...state.thoIndex, ...payload}}
-
     default:
       return { ...state, user: userData };
   }

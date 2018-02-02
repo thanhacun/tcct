@@ -38,6 +38,7 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^4.4.1",
     "redux-thunk": "^2.2.0",
+    "socket.io-client": "^2.0.4",
     "source-map-explorer": "^1.5.0"
   },
   "scripts": {
@@ -57,5 +58,14 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0"
   },
-  "proxy": "http://api:3000"
+  "proxy": {
+    "/api": {
+      "target": "http://api:3000",
+      "ws": true
+    },
+    "/socket": {
+      "target": "ws://api:3000",
+      "ws": true
+    }
+  }
 }

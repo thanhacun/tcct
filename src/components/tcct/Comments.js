@@ -6,14 +6,15 @@ import busyLoading from '../busyLoading';
 
 const Comments = ({getThoComments, postThoComment, thoIndex, comments, ...props}) => {
   const { onChange, onSubmit, onDelete, commentState } = props;
-  const commentsList = comments.reverse().map((comment, index) => {
+  const commentsList = comments.map((comment, index) => {
     return (
       <div key={`comment_${index}`}>
-        <span>{comment.text}</span><br/>
-        {/* [] TODO: using user profile*/}
-        <cite>{`${comment.postedUser.local.email} gửi lúc: ${new Date(comment.postedAt || null).toLocaleString()} | `}</cite>
+        <p style={{borderLeft: "solid 1px lightgrey", paddingLeft: "3px"}}>{comment.text}</p>
+        {/* [X] TODO: using user profile*/}
+        <cite style={{paddingLeft: "5px"}}>{`${comment.postedUser.profile.email}
+          gửi lúc: ${new Date(comment.postedAt || null).toLocaleString()} | `}</cite>
         <Button bsStyle="link" onClick={() => onDelete(comment._id)}
-          disabled={props.user.userEmail !== comment.postedUser.local.email}>Xóa</Button>
+          disabled={(!props.user.profile) || (props.user.profile.email !== comment.postedUser.profile.email)}>Xóa</Button>
       </div>
     )
   })
@@ -26,8 +27,8 @@ const Comments = ({getThoComments, postThoComment, thoIndex, comments, ...props}
           value={commentState} onChange={onChange}/>
         <Button className="pull-right" type="submit" disabled={!props.user.userEmail}
           bsStyle="link">Gửi bình luận</Button>
+        <div className="clearfix"></div>
       </Form>
-      <div className="clearfix"></div>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { routerMiddleware } from 'react-router-redux';
 
 import syncUserMiddleware from './utils/syncUser';
 import reducer from './reducers/index';
+import { init } from './websocket';
 
 export let history = createHistory();
 
@@ -15,4 +16,7 @@ const middleware = (process.env.NODE_ENV !== 'production' && logger) ?
   applyMiddleware(syncUserMiddleware, routerMiddleware(history), promise(), thunk, logger):
   applyMiddleware(syncUserMiddleware, routerMiddleware(history), promise(), thunk)
 
-export default createStore(reducer, middleware);
+const store = createStore(reducer, middleware);
+init(store);
+
+export default store;

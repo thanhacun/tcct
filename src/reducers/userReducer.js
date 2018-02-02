@@ -20,7 +20,7 @@ const cleanData = (rawData) => {
     } else {
       accResult[provider] = {};
     }
-    return {...accResult, role: rawData.role, _id: rawData._id};
+    return {...accResult, role: rawData.role, _id: rawData._id, profile: rawData.profile};
   }, {});
 }
 

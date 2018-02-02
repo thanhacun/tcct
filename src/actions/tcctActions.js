@@ -1,4 +1,15 @@
 import axios from 'axios';
+import emit from '../websocket';
+
+const asyncCallWithExtra = async function(asyncCall, extra) {
+  // asyncCall, extra: function
+  // using async, await pattern to return promise with extra (additional) steps
+  // this to make sure payload of an asynccall still return data and can do some
+  // other functions
+  const apiResult = await asyncCall();
+  extra();
+  return apiResult;
+}
 
 export function modifyTho(modifiedTho, modifyAction){
   return {
@@ -38,7 +49,11 @@ export function getThoComments(thoIndex) {
 export function postThoComment(thoIndex, postedComment, commentAction) {
   return {
     type: 'POST_COMMENT',
-    payload: axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction})
+    // payload: axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction}),
+    payload: asyncCallWithExtra(
+      () => axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction}),
+      () => emit({message: 'POST_COMMENT', payload: thoIndex})
+    ),
   }
 }
 
