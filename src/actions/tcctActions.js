@@ -2,7 +2,7 @@ import axios from 'axios';
 import emit from '../websocket';
 
 const asyncCallWithExtra = async function(asyncCall, extra) {
-  // asyncCall, extra: function
+  // asyncCall, extra: functions
   // using async, await pattern to return promise with extra (additional) steps
   // this to make sure payload of an asynccall still return data and can do some
   // other functions
