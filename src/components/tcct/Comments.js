@@ -16,13 +16,13 @@ const Comments = ({getThoComments, postThoComment, thoIndex, comments, ...props}
       paddingLeft: "3px", backgroundColor: "lightgrey"
     }
     return (
-      <div key={`comment_${index}`}
-        style={commentBlockStyle}
-        >
+      <div key={`comment_${index}`} style={commentBlockStyle}>
         <em>
-          <u>{`${comment.postedUser.profile.email} gửi lúc: ${new Date(comment.postedAt || null).toLocaleString()} `}</u>
+          <u>{`${comment.postedUser.profile.email} gửi lúc:
+            ${new Date(comment.postedAt || null).toLocaleString()} `}</u>
           { isCommentedUser &&
-            <Button style={{padding: "0px"}} bsStyle="link" onClick={() => onDelete(comment._id)}>{` | Xóa`}</Button>
+            <Button style={{padding: "0px"}} bsStyle="link"
+              onClick={() => onDelete(comment._id)}>{` | X`}</Button>
           }
         </em>
         <ReactMarkdown source={comment.text} />
@@ -33,14 +33,14 @@ const Comments = ({getThoComments, postThoComment, thoIndex, comments, ...props}
     <div>
       <Button bsStyle="link" bsSize="large" onClick={toggleCommentShow}>
         {commentShow ? `Ẩn bình luận` : `Hiện bình luận`} {` (${comments.length})`}</Button>
-      { commentShow && commentsList }
+      {commentShow && commentsList}
       {commentShow &&
       <Form onSubmit={onSubmit}>
         <FormControl componentClass="textarea" value={commentState} onChange={onChange}
-          placeholder={isLogin ? `Có thể dùng markdown` : `Login để bình luận`}
+          placeholder={isLogin ? `Bình luận của bạn (có thể dùng Markdown)` : `Login để bình luận`}
           disabled={!isLogin}/>
         <Button className="pull-right" type="submit" bsStyle="link"
-          disabled={!props.user.userEmail || !commentState}>Gửi bình luận</Button>
+          disabled={!props.user.userEmail || !commentState}>Gửi</Button>
         <div className="clearfix"></div>
       </Form>
       }

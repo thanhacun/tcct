@@ -1,11 +1,15 @@
 import axios from 'axios';
 import emit from '../websocket';
+import Auth from '../utils/Auth';
+
+// [] NOTE: why cannot use object spread here?
+// const headerAuth = {authorization: `bearer ${Auth.getToken()}`};
 
 const asyncCallWithExtra = async function(asyncCall, extra) {
   // asyncCall, extra: functions
   // using async, await pattern to return promise with extra (additional) steps
   // this to make sure payload of an asynccall still return data and can do some
-  // other functions
+  // other functions: such as emit a socket.io event
   const apiResult = await asyncCall();
   extra();
   return apiResult;
@@ -14,7 +18,12 @@ const asyncCallWithExtra = async function(asyncCall, extra) {
 export function modifyTho(modifiedTho, modifyAction){
   return {
     type: 'MODIFY_THO',
-    payload: axios.post('/api/tcct/tho', {modifiedTho, modifyAction})
+    payload: axios({
+      method: 'POST',
+      url: '/api/tcct/tho',
+      headers: {authorization: `bearer ${Auth.getToken()}`},
+      data: {modifiedTho, modifyAction}
+    })
   }
 };
 
@@ -49,20 +58,19 @@ export function getThoComments(thoIndex) {
 export function postThoComment(thoIndex, postedComment, commentAction) {
   return {
     type: 'POST_COMMENT',
-    // payload: axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction}),
     payload: asyncCallWithExtra(
-      () => axios.post(`/api/tcct/tho/${thoIndex}/comment`, {postedComment, commentAction}),
+      // NOTE: using axios OPTIONS to send post request with data and headers
+      () => axios({
+        method: 'POST',
+        url: `/api/tcct/tho/${thoIndex}/comment`,
+        headers: {authorization: `bearer ${Auth.getToken()}`},
+        // headers: { ...headerAuth },
+        data: {postedComment, commentAction}
+      }),
       () => emit({message: 'POST_COMMENT', payload: thoIndex})
     ),
   }
 }
-
-// export function pathToIndex(selectedIndex) {
-//   return {
-//     type: 'PATH_TO_INDEX',
-//     payload: {selectedIndex}
-//   }
-// }
 
 export function hitsToStore(hits) {
   return {
