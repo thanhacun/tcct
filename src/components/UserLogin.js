@@ -18,6 +18,7 @@ class UserLogin extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.loginFailure  = this.loginFailure.bind(this);
+    this.loginSuccess = this.loginSuccess.bind(this);
   }
 
   componentDidMount(){
