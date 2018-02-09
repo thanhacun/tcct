@@ -28,6 +28,6 @@ export const init = (store) => {
 // }
 
 export default ({message, payload}) => {
-  console.log(`Broadcast ${message} with data as ${payload}`);
+  // console.log(`Broadcast ${message} with data as ${payload}`);
   socket.emit(message, payload);
 }
