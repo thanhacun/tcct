@@ -44,6 +44,7 @@ class UserProfile extends Component {
     }
   }
   render(){
+    document.title = `=== PROFILE ===`;
     return(
       <div className="container">
         <div className="page-header text-center">

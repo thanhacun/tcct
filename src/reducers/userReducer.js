@@ -52,7 +52,7 @@ const user = function(state=userInitialState, action){
 
     // ========================================
     // ALL REJECTED ACTIONS HAVE SAME BEHAVIOR
-    // exploit fallthrough
+    // exploit fall through
     // ========================================
     case 'GET_USER_INFO_REJECTED':
     case 'LOGIN_REJECTED':

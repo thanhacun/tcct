@@ -38,6 +38,7 @@ class UserSignup extends Component {
   }
 
   render(){
+    document.title = `=== SIGNUP ===`;
     return (
       <div className="container">
         <h1><FontAwesome icon={`user-plus`}/> Local Signup</h1>
