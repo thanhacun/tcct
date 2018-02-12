@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, goBack } from 'react-router-redux';
 
 import SocialButton from './SocialButton';
 
@@ -27,7 +27,9 @@ class UserLogin extends Component {
   componentDidUpdate(){
     //redirect to profile if loggedin
     if (this.props.userEmail) {
-      this.props.goTo('/profile');
+      // [X] TODO: using react-router goBack here
+      // this.props.goTo('/profile');
+      this.props.goBack();
     }
   }
 
@@ -96,6 +98,7 @@ const mapDispatchToProps = dispatch => {
   return {
     localLogin: (email, password) => dispatch(localLogin(email, password)),
     goTo: (path) => dispatch(push(path)),
+    goBack: () => dispatch(goBack()),
     getUserInfo: () => dispatch(getUserInfo()),
     socialLogin: (socialResponse) => dispatch(socialLogin(socialResponse))
   };
