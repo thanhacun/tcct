@@ -6,8 +6,8 @@ import SocialButton from './SocialButton';
 import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
-import { localSignup, socialSignup } from '../actions/userActions';
-
+import { localSignup, socialSignup, getUserInfo } from '../actions/userActions';
+import { goTo } from '../actions/commonActions';
 
 //TODO: understand clearly dummy and smart components
 //TODO: redux-form
@@ -21,13 +21,25 @@ class UserSignup extends Component {
     this.handleSocialLoginFailer = this.handleSocialLoginFailer.bind(this);
   }
 
+  componentDidMount(){
+    this.props.getUserInfo();
+  }
+
+  componentDidUpdate(){
+    if (this.props.profile && this.props.profile.email) {
+      this.props.goTo('/profile');
+    }
+    if (this.props.justSignup) {
+      this.props.goTo('/login');
+    }
+  }
+
   handleChange(e, type){
     //ES6 dynamic object key
     this.setState({[type]: e.target.value});
   }
 
   handleSubmit(e){
-    //alert(this.state.int_email + this.state.int_password);
     this.props.localSignup(this.state.int_email, this.state.int_password);
     this.setState({int_email: '', int_password: ''});
     e.preventDefault();
@@ -79,7 +91,9 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
   return {
     localSignup: (email, password) => dispatch(localSignup(email, password)),
-    socialSignup: (socialResponse) => dispatch(socialSignup(socialResponse))
+    socialSignup: (socialResponse) => dispatch(socialSignup(socialResponse)),
+    getUserInfo: () => dispatch(getUserInfo()),
+    goTo: (path) => goTo(dispatch, path)
   };
 }
 

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push, goBack } from 'react-router-redux';
+// import { push, goBack } from 'react-router-redux';
 
 import SocialButton from './SocialButton';
 
 import { Jumbotron, Form, FormGroup, ControlLabel, FormControl,
   Button, Alert } from 'react-bootstrap';
 import { localLogin, getUserInfo, socialLogin } from '../actions/userActions';
+import { goTo, back } from '../actions/commonActions';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
 //TODO: understand clearly dummy and smart components
@@ -28,8 +29,7 @@ class UserLogin extends Component {
     //redirect to profile if loggedin
     if (this.props.userEmail) {
       // [X] TODO: using react-router goBack here
-      // this.props.goTo('/profile');
-      this.props.goBack();
+      this.props.back();
     }
   }
 
@@ -53,7 +53,7 @@ class UserLogin extends Component {
     return (
       <div className="container">
         <Jumbotron className="text-center">
-          <h2><FontAwesome icon={`sign-in-alt`}/> Login or Register with:</h2>
+          <h2><FontAwesome icon={`sign-in-alt`}/> Login locally or with:</h2>
           <SocialButton provider="facebook"
             onLoginSuccess={(response) => this.props.socialLogin(response)}
             onLoginFailure={(response) => this.loginFailure(response)}
@@ -97,8 +97,9 @@ const mapStateToProps = store => store.user;
 const mapDispatchToProps = dispatch => {
   return {
     localLogin: (email, password) => dispatch(localLogin(email, password)),
-    goTo: (path) => dispatch(push(path)),
-    goBack: () => dispatch(goBack()),
+    goTo: (path) => goTo(dispatch, path),
+    // goBack: () => dispatch(goBack()),
+    back: () => back(dispatch),
     getUserInfo: () => dispatch(getUserInfo()),
     socialLogin: (socialResponse) => dispatch(socialLogin(socialResponse))
   };

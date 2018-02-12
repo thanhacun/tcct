@@ -60,7 +60,7 @@ class UserProfile extends Component {
               {this.props.local && this.props.local.email &&
                 <p>
                   <strong>email</strong>: {this.props.local.email} <br/>
-                  <strong>password</strong>: {this.props.local.password.split('').slice(0,12).join('') + '...'}
+                  <strong>token</strong>: {this.props.local.password.split('').slice(0,12).join('') + '...'}
 
                   {/* <a href="" className="btn btn-default" disabled>Unlink</a> */}
                 </p>
