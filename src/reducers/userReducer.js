@@ -59,6 +59,7 @@ const user = function(state=userInitialState, action){
     case 'LOGIN_REJECTED':
       Auth.deauthenticateUser();
       // eslint-disable-next-line
+    case 'SOCIAL_SIGNUP_REJECTED':
     case 'LOCAL_SIGNUP_REJECTED':
       return { ...state, busy: false, error: action.payload.response.data.error };
 

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import SocialButton from './SocialButton';
 
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, FormControl, Button,
+  Alert } from 'react-bootstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
 import { localSignup, socialSignup, getUserInfo } from '../actions/userActions';
@@ -78,7 +79,13 @@ class UserSignup extends Component {
           onLoginFailure={(response) => this.handleSocialLoginFailer(response)}>
           <FontAwesome icon={[`fab`, `google`]}/> Google
         </SocialButton>
-        {/* {this.props.facebook.token ? <Button onClick={this.props.facebookAPILogin(this.props.facebook.token)}></Button> : <span>Waiting for facebook token ...</span>} */}
+        <hr />
+        {this.props.error &&
+          <Alert bsStyle="danger">
+            <h4>Warning!</h4>
+            <p>{this.props.error}</p>
+          </Alert>
+        }
       </div>
     );
   }

@@ -81,11 +81,12 @@ class UserLogin extends Component {
         </Form>
         <hr />
         {/* Show warning */}
-        {(this.props.error) ?
+        {this.props.error &&
           <Alert bsStyle="danger">
             <h4>Warning!</h4>
             <p>{this.props.error}</p>
-          </Alert> : ""}
+          </Alert>
+        }
         <p>Need an account? <a href="" onClick={() => this.props.goTo("/signup")}>Signup</a></p>
       </div>
     );
@@ -98,13 +99,9 @@ const mapDispatchToProps = dispatch => {
   return {
     localLogin: (email, password) => dispatch(localLogin(email, password)),
     goTo: (path) => goTo(dispatch, path),
-    // goBack: () => dispatch(goBack()),
     back: () => back(dispatch),
     getUserInfo: () => dispatch(getUserInfo()),
-    socialLogin: (socialResponse) => {
-      console.log(socialResponse);
-      dispatch(socialLogin(socialResponse))
-    }
+    socialLogin: (socialResponse) => dispatch(socialLogin(socialResponse))
   };
 }
 
