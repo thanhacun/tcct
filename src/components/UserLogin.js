@@ -26,8 +26,8 @@ class UserLogin extends Component {
   }
 
   componentDidUpdate(){
-    //redirect to profile if loggedin
-    if (this.props.userEmail) {
+    //redirect to previous page if logged in
+    if (this.props.profile.email) {
       // [X] TODO: using react-router goBack here
       this.props.back();
     }
@@ -101,7 +101,10 @@ const mapDispatchToProps = dispatch => {
     // goBack: () => dispatch(goBack()),
     back: () => back(dispatch),
     getUserInfo: () => dispatch(getUserInfo()),
-    socialLogin: (socialResponse) => dispatch(socialLogin(socialResponse))
+    socialLogin: (socialResponse) => {
+      console.log(socialResponse);
+      dispatch(socialLogin(socialResponse))
+    }
   };
 }
 

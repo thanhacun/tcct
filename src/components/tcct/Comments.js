@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withHandlers, withState, branch, lifecycle } from 'recompose';
-import { Form, FormControl, Button } from 'react-bootstrap';
+import { Form, FormControl, Button, Media } from 'react-bootstrap';
 import ReactMarkdown from 'react-markdown';
 
 import FontAwesome from '@fortawesome/react-fontawesome';
@@ -9,34 +9,39 @@ import busyLoading from '../busyLoading';
 const Comment = ({comment, index, ...props}) => {
   const { isCommentedUser, isAdmin, onDelete, showSpoiler, toggleSpoilerShow, onSubmit } = props;
   const commentBlockStyle = (index % 2) ? {
-    paddingLeft: "3px", borderLeft: "solid 1px lightgrey"
+    paddingLeft: "3px", marginTop: "1px", borderLeft: "solid 1px lightgrey"
   } : {
-    paddingLeft: "3px", backgroundColor: "lightgrey"
+    paddingLeft: "3px", marginTop: "1px", backgroundColor: "lightgrey"
   }
   return (
-    <div key={`comment_${index}`} style={commentBlockStyle}>
-      <em>
-        <u>{`${comment.postedUser.profile.email} gửi lúc:
-          ${new Date(comment.postedAt || null).toLocaleString()} `}</u>
-        {isCommentedUser &&
-          <Button style={{padding: "0px"}} bsStyle="link"
-            onClick={() => onDelete(comment._id)}>{` | X`}</Button>
-        }
-        {isAdmin &&
-          <Button style={{padding: "0px"}} bsStyle="link"
-            onClick={(e) => onSubmit(e, true, comment)}>{` | S`}</Button>
-        }
-        {(comment.spoiler) &&
+      <Media key={`comment_${index}`} style={commentBlockStyle}>
+        <Media.Heading componentClass={`span`}>
+          <em>{`${comment.postedUser.profile.email} gửi lúc:
+            ${new Date(comment.postedAt || null).toLocaleString()} `}</em>
+          { isCommentedUser &&
+            <Button style={{padding: "0px"}} bsStyle="link"
+                  onClick={() => onDelete(comment._id)}>{` | X`}</Button>
+          }
+          { isAdmin &&
+            <Button style={{padding: "0px"}} bsStyle="link"
+              onClick={(e) => onSubmit(e, true, comment)}>{` | S`}</Button>
+          }
+          {(comment.spoiler) &&
             <span className="text-danger">{` | Spoiler `}
               <Button style={{padding: "0px"}} bsStyle="link" onClick={toggleSpoilerShow}>
                 <FontAwesome className="text-danger" icon={(showSpoiler) ? 'chevron-up' : 'chevron-down'} /></Button>
             </span>
-        }
-      </em>
-      {(!comment.spoiler || showSpoiler) &&
-        <ReactMarkdown source={comment.text} />
-      }
-    </div>
+          }
+        </Media.Heading>
+        <Media.Left>
+          <img width={32} src={comment.postedUser.profile.avatar || 'http://via.placeholder.com/32x32'} alt="User avatar"/>
+        </Media.Left>
+        <Media.Body>
+          { (!comment.spoiler || showSpoiler) &&
+            <ReactMarkdown source={comment.text} />
+          }
+        </Media.Body>
+      </Media>
   )
 }
 
