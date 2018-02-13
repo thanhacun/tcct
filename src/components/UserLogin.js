@@ -27,7 +27,7 @@ class UserLogin extends Component {
 
   componentDidUpdate(){
     //redirect to previous page if logged in
-    if (this.props.profile.email) {
+    if (this.props.profile && this.props.profile.email) {
       // [X] TODO: using react-router goBack here
       this.props.back();
     }
