@@ -3,14 +3,26 @@ import { compose, withHandlers, withState } from 'recompose';
 import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button,
   OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap';
 
-import RichTextEditor from '../RichTextEditor';
 import FontAwesome from '@fortawesome/react-fontawesome';
+import ReactMarkdown from 'react-markdown';
 
+const ctrlSHandler = (e, action, fireAction) => {
+  // [] TODO: more general function to handle special combination
+  // action is a function
+  // fireAction: boolean check to fire action or not
+  if (e.ctrlKey && e.keyCode === 83) {
+    // user click CTRL-S combination
+    e.preventDefault();
+    // and it's OK to fire the action
+    fireAction && action(e);
+
+  }
+}
 // NOTE: busyLoading is handled in IndexTho
 const FormTho = ({dataState, fieldLock, selectedIndex, ...props}) => {
   // either load data from tho to edit or allow to input new data
   const { index, title, content, footer, imgUrl, mediaUrl, postedUser} = dataState;
-  const { onChange, onSubmit, onReset, updateRawHTML, onDelete, onRefresh, unlockField, user } = props;
+  const { onChange, onSubmit, onReset, onDelete, onRefresh, unlockField, user } = props;
   const isAdmin = user && user.userEmail && user.role.admin;
   // [] NOTE: shallow compare, may affect performance
   const isChange = !(JSON.stringify(dataState) === JSON.stringify(props.selectedTho));
@@ -21,7 +33,7 @@ const FormTho = ({dataState, fieldLock, selectedIndex, ...props}) => {
   );
 
   return (
-    <Form onSubmit={onSubmit} >
+    <Form onSubmit={onSubmit} onKeyDown={(e) => ctrlSHandler(e, onSubmit, isChange)}>
         <FormGroup>
           <ControlLabel>STT</ControlLabel>
           <InputGroup>
@@ -33,20 +45,20 @@ const FormTho = ({dataState, fieldLock, selectedIndex, ...props}) => {
               disabled={fieldLock} ></FormControl>
           </InputGroup>
         </FormGroup>
-      <FormGroup>
-        <ControlLabel>Tiêu đề</ControlLabel>
-        <FormControl type="text" value={title || ''} name="title"
-          onChange={onChange} required></FormControl>
+        <FormGroup>
+          <ControlLabel>Tiêu đề</ControlLabel>
+          <FormControl type="text" value={title || ''} name="title"
+            onChange={onChange} required></FormControl>
         </FormGroup>
         <FormGroup>
-          <ControlLabel>Nội dung</ControlLabel>
-          <RichTextEditor label="Code HTML tự sinh"
-            updateRawHTML={(rawHTML) => updateRawHTML(rawHTML)}
-            value={content}
-            // syncHTMLtoEditor={selectedIndex >= 1}
-            // syncHTMLtoEditor={true}
-          />
-      </FormGroup>
+          <ControlLabel>Nội dung (Markdown)</ControlLabel>
+          <FormControl componentClass="textarea" value={content || ''} name="content"
+            onChange={onChange} required style={{minHeight: "250px"}}/>
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Preview (CTRL-S to save)</ControlLabel>
+          <ReactMarkdown source={content || ''} />
+        </FormGroup>
       <FormGroup>
         <ControlLabel>Ghi chú</ControlLabel>
         <FormControl type="text" value={footer || ''} name="footer"

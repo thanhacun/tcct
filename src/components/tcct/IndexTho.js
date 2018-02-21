@@ -9,7 +9,8 @@ import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import ReactPlayer from 'react-player';
-import renderHTML from 'react-render-html';
+// import renderHTML from 'react-render-html';
+import ReactMarkdown from 'react-markdown';
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers, lifecycle } from 'recompose';
@@ -89,20 +90,38 @@ const ConnectedHighlight = connectHighlight(
     });
     // customized trick for highlighted content because the data is html code
     let highlightedHits = null;
+    // if (attributeName === "content") {
+    //   highlightedHits = renderHTML(
+    //     parseHit.map((part, index) => {
+    //     if (part.isHighlighted) return `<mark>${part.value}</mark>`
+    //     return part.value;
+    //   }).join('')
+    // );
+    // } else {
+    //   highlightedHits = parseHit.map((part, index) => {
+    //     if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>;
+    //     return part.value;
+    //   });
+    // }
+
+    // handle markdown conttent in Tho
+    // NOTE: do not use inlineHTML
     if (attributeName === "content") {
-      highlightedHits = renderHTML(
-        parseHit.map((part, index) => {
-        if (part.isHighlighted) return `<mark>${part.value}</mark>`
+      highlightedHits = parseHit.map((part, index) => {
+        if (part.isHighlighted) return `**_${part.value}_**`
         return part.value;
-      }).join('')
-    );
+      }).join('');
+      return <ReactMarkdown source={highlightedHits} />;
     } else {
       highlightedHits = parseHit.map((part, index) => {
-        if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>;
+        if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>
         return part.value;
       });
+      return <span>{highlightedHits}</span>;
     }
-    return <span>{highlightedHits}</span>;
+
+    // return <span>{highlightedHits}</span>;
+    // return <ReactMarkdown source={highlightedHits} />
 });
 
 const HitsList = ({hits, selectedIndex, ...props}) => {
