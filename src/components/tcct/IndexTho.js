@@ -9,10 +9,10 @@ import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import ReactPlayer from 'react-player';
-// import renderHTML from 'react-render-html';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownPreview } from 'react-marked-markdown';
+
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
-  ListGroupItem, Jumbotron, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
+  ListGroupItem, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
 import { branch, compose, withState, withHandlers, lifecycle } from 'recompose';
 import FontAwesome from '@fortawesome/react-fontawesome';
 
@@ -22,6 +22,7 @@ import showSelectedTho from './ShowSelectedTho';
 import FormTho from './FormTho';
 import Comments from './Comments';
 import busyLoading from '../busyLoading';
+import ShowJumbotron from './jumbotrons';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
   // const algoliaLogoStyle = {
@@ -90,28 +91,15 @@ const ConnectedHighlight = connectHighlight(
     });
     // customized trick for highlighted content because the data is html code
     let highlightedHits = null;
-    // if (attributeName === "content") {
-    //   highlightedHits = renderHTML(
-    //     parseHit.map((part, index) => {
-    //     if (part.isHighlighted) return `<mark>${part.value}</mark>`
-    //     return part.value;
-    //   }).join('')
-    // );
-    // } else {
-    //   highlightedHits = parseHit.map((part, index) => {
-    //     if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>;
-    //     return part.value;
-    //   });
-    // }
-
     // handle markdown conttent in Tho
     // NOTE: do not use inlineHTML
     if (attributeName === "content") {
       highlightedHits = parseHit.map((part, index) => {
-        if (part.isHighlighted) return `**_${part.value}_**`
+        if (part.isHighlighted) return `\`${part.value}\``
+        // if (part.isHighlighted) return `~~${part.value}~~`
         return part.value;
       }).join('');
-      return <ReactMarkdown source={highlightedHits} />;
+      return <MarkdownPreview value={highlightedHits} />;
     } else {
       highlightedHits = parseHit.map((part, index) => {
         if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>
@@ -120,8 +108,6 @@ const ConnectedHighlight = connectHighlight(
       return <span>{highlightedHits}</span>;
     }
 
-    // return <span>{highlightedHits}</span>;
-    // return <ReactMarkdown source={highlightedHits} />
 });
 
 const HitsList = ({hits, selectedIndex, ...props}) => {
@@ -212,35 +198,6 @@ const EnhancedShowFormTho = compose(
     busyLoading
   )
 )(ShowFormTho);
-
-const ShowJumbotron = () => {
-  const bgImages = ['https://i.imgur.com/zFku8m1.jpg', 'https://i.imgur.com/BTS3ukW.jpg?2'];
-  const jbStyle={
-    backgroundImage: `url(${bgImages[1]})`,
-    opacity: '0.7',
-    backgroundSize: 'cover',
-    color: 'black',
-    fontFamily: 'monospace',
-    fontWeight: 'bold'
-  };
-
-  return (
-    <Default>
-      <Jumbotron style={jbStyle}>
-        <div>
-          <h3 className="text-center">
-            <span style={{backgroundColor: 'rgba(248, 248, 248, 0.5)'}}>
-              Trời hừng sáng rộn ràng<br />
-              Mây ráng chiều thanh thản<br/>
-              Cả cuộc đời trong sáng<br/>
-              Chí không để lụi tàn...<br/>
-            </span>
-          </h3>
-        </div>
-      </Jumbotron>
-    </Default>
-  )
-}
 
 const CustomizedHits = ({hits, ...props}) => {
   const { defaultPerPage, perPageItems, hitClick, showList, toggle, selectHit,

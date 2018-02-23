@@ -4,7 +4,7 @@ import { Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button,
   OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap';
 
 import FontAwesome from '@fortawesome/react-fontawesome';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownPreview } from 'react-marked-markdown'
 
 const ctrlSHandler = (e, action, fireAction) => {
   // [] TODO: more general function to handle special combination
@@ -57,7 +57,9 @@ const FormTho = ({dataState, fieldLock, selectedIndex, ...props}) => {
         </FormGroup>
         <FormGroup>
           <ControlLabel>Preview (CTRL-S to save)</ControlLabel>
-          <ReactMarkdown source={content || ''} />
+          <section style={{border: "solid 1px lightgrey", paddingLeft: "10px"}}>
+            <MarkdownPreview value={content || ''} />
+          </section>
         </FormGroup>
       <FormGroup>
         <ControlLabel>Ghi chú</ControlLabel>

@@ -32,7 +32,7 @@ ReactDOM.render(
   </ConnectedRouter>
 </Provider>, app);
 
-// Only deploy registerServiceWorker in production mode
+// [X] TODO: only deploy registerServiceWorker in production mode
 // [] TODO: and only when having https
 if (process.env.NODE_ENV === 'production' && registerServiceWorker) {
   registerServiceWorker();

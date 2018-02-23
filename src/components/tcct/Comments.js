@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withHandlers, withState, branch, lifecycle } from 'recompose';
 import { Form, FormControl, Button, Media } from 'react-bootstrap';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownPreview } from 'react-marked-markdown';
 
 import FontAwesome from '@fortawesome/react-fontawesome';
 import busyLoading from '../busyLoading';
@@ -34,11 +34,11 @@ const Comment = ({comment, index, ...props}) => {
           }
         </Media.Heading>
         <Media.Left>
-          <img width={32} src={comment.postedUser.profile.avatar || 'http://via.placeholder.com/32x32'} alt="User avatar"/>
+          <img width={32} src={comment.postedUser.profile.avatar || 'https://via.placeholder.com/32x32'} alt="User avatar"/>
         </Media.Left>
         <Media.Body>
           { (!comment.spoiler || showSpoiler) &&
-            <ReactMarkdown source={comment.text} />
+            <MarkdownPreview value={comment.text} />
           }
         </Media.Body>
       </Media>

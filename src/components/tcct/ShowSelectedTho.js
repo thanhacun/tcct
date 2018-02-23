@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'react-bootstrap';
 
 const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
   const thoStyle = {
@@ -6,24 +7,21 @@ const showSelectedTho = BasedComponent => ({thoObj, ...props}) => {
       // border: 'solid 1px',
       // borderColor: 'lightgrey',
     },
-    content: (thoObj && thoObj.imgUrl) ? {
-      padding: '5px',
-      backgroundImage: `url(${thoObj.imgUrl})`,
-      backgroundSize: 'cover',
-      fontWeight: 'bold',
-      minHeight: '500px'
-    } : {
+    content: {
       padding: '5px',
       minHeight: '500px'
-    }
+    },
   };
-  // Manipulate document title
+  // set current page title
   const { thoTitle } = props;
   document.title = thoTitle;
 
   return (
     <div style={thoStyle.container}>
       <div style={thoStyle.content}>
+        {(thoObj && thoObj.imgUrl) &&
+          <Image src={thoObj.imgUrl} responsive />
+        }
         <BasedComponent thoObj={thoObj} {...props} />
       </div>
     </div>

@@ -10,6 +10,7 @@ import UserLogin from '../components/UserLogin';
 import UserProfile from '../components/UserProfile';
 import UserConnect from '../components/UserConnect';
 import ShowTho from '../components/tcct/ShowTho';
+import About from '../components/tcct/About';
 
 const tcctLinks = [
   {
@@ -65,6 +66,13 @@ const tcctLinks = [
     "component": UserConnect,
     "menu": false
   },
+  {
+    "id": 7,
+    "path": "/tcct/about",
+    "des": "Thông tin",
+    "component": About,
+    "menu": true
+  }
 ];
 
 // const sortedMenu = tcctLinks.sort((link1, link2) => link1.id > link2.id);
@@ -101,11 +109,14 @@ const TCCTMenu = ({role}) =>
     <LinkContainer to={'/tcct/xemtho/1'} key={`tcct_0`}>
       <NavItem>{`Xem Thơ`}</NavItem>
     </LinkContainer>
-    {(role && role.admin) ?
+    {(role && role.admin) &&
       <LinkContainer to={'/tcct/suatho/0'} key={`tcct_1`}>
         <NavItem>{`Thêm/Sửa Thơ`}</NavItem>
       </LinkContainer>
-      : null}
+    }
+    <LinkContainer to={`/tcct/about`} key={`tcct_2`}>
+      <NavItem>{`Thông tin`}</NavItem>
+    </LinkContainer>
   </Nav>
 
 export default tcctRoutes;
