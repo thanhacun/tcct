@@ -1,5 +1,5 @@
 import React from 'react';
-import { MarkdownPreview } from 'react-marked-markdown';
+import MarkdownPreview from 'react-markdown';
 import ShowJumbotron from './jumbotrons';
 
 const content = `
@@ -53,7 +53,7 @@ export default () => {
   return (
     <div className="container">
       <ShowJumbotron />
-      <MarkdownPreview value={content} markedOptions={{gfm: true}}/>
+      <MarkdownPreview source={content} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withHandlers, withState, branch, lifecycle } from 'recompose';
 import { Form, FormControl, Button, Media } from 'react-bootstrap';
-import { MarkdownPreview } from 'react-marked-markdown';
+import MarkdownPreview from 'react-markdown';
 
 import FontAwesome from '@fortawesome/react-fontawesome';
 import busyLoading from '../busyLoading';
@@ -38,7 +38,7 @@ const Comment = ({comment, index, ...props}) => {
         </Media.Left>
         <Media.Body>
           { (!comment.spoiler || showSpoiler) &&
-            <MarkdownPreview value={comment.text} />
+            <MarkdownPreview source={comment.text} />
           }
         </Media.Body>
       </Media>

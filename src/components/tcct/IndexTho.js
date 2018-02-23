@@ -9,7 +9,7 @@ import algoliaConfig from '../../config/algolia';
 /*=== ALGOLIA InstantSearch ===*/
 
 import ReactPlayer from 'react-player';
-import { MarkdownPreview } from 'react-marked-markdown';
+import MarkdownPreview from 'react-markdown';
 
 import { Pagination, FormGroup, FormControl, ListGroup, Col, InputGroup,
   ListGroupItem, Clearfix, Button, ButtonGroup, Grid, Row } from 'react-bootstrap';
@@ -99,7 +99,7 @@ const ConnectedHighlight = connectHighlight(
         // if (part.isHighlighted) return `~~${part.value}~~`
         return part.value;
       }).join('');
-      return <MarkdownPreview value={highlightedHits} />;
+      return <MarkdownPreview source={highlightedHits} />;
     } else {
       highlightedHits = parseHit.map((part, index) => {
         if (part.isHighlighted) return <mark key={`hl_${index}`}>{part.value}</mark>
