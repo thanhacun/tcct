@@ -41,6 +41,13 @@ export function getTho(index){
   }
 };
 
+export function getAllThos() {
+  return {
+    type: 'GET_ALL_THOS',
+    payload: axios.get(`/api/tcct/allthos`)
+  }
+}
+
 export function selectHit(hit) {
   return {
     type: 'SELECT_HIT',

@@ -34,18 +34,6 @@ const content = `
 
   Chủ tịch Hội Nhà văn Việt Nam
 
-  ___
-
-  ## Tính năng và công nghệ sử dụng trong ứng dụng ##
-
-  | Tính năng                                      | Công nghệ              |
-  | ---                                            | ---                    |
-  | ~~Sử dụng Markdown để trình bày~~              | Fullstack Javascript   |
-  | ~~Cho phép đăng ký qua facebook và google~~    | Create-React-App       |
-  | ~~Cho phép người dùng bình luận~~              | Mongo database         |
-  | Cho phép người dùng đề nghị thơ mới            | Node.js as api server  |
-  | 2 chế độ themes: Sáng hoặc Tối                 | Redux                  |
-  |                                                | Algolia instant search |
 
 `
 

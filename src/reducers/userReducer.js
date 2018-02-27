@@ -9,6 +9,8 @@ const userInitialState = {
   google: {},
   role: {admin: false, user: false},
   justSignup: false,
+  allUsers: [],
+  thos: []
 };
 const providers = ['local', 'facebook', 'google'];
 let [userData, userEmail] = [null, {}, null]
@@ -21,15 +23,15 @@ const cleanData = (rawData) => {
     } else {
       accResult[provider] = {};
     }
-    return {...accResult, role: rawData.role, _id: rawData._id, profile: rawData.profile};
+    return {...accResult, role: rawData.role, _id: rawData._id, profile: rawData.profile,
+      allUsers: rawData.allUsers || []};
   }, {});
 }
 
 const user = function(state=userInitialState, action){
   // clean userData and get userEmail
-  if (action.payload && action.payload.data && action.payload.data.user) {
-    userData = cleanData(action.payload.data.user);
-
+  if (action.payload && action.payload.data) {
+    userData = cleanData(action.payload.data);
     userEmail = providers.reduce((accResult, provider) => {
       if (userData.hasOwnProperty(provider) && userData[provider].email) {
         accResult =  userData[provider].email;
@@ -49,6 +51,8 @@ const user = function(state=userInitialState, action){
     case 'SOCIAL_LOGIN_PENDING':
     case 'SOCIAL_SIGNUP_PENDING':
     case 'SOCIAL_CONNECT_PENDING':
+    case 'GET_ALL_USERS_INFO_PENDING':
+    case 'GET_ALL_THOS_PENDING':
       return { ...state, busy: true };
 
     // ========================================
@@ -56,6 +60,7 @@ const user = function(state=userInitialState, action){
     // exploit fall through
     // ========================================
     case 'GET_USER_INFO_REJECTED':
+    case 'GET_ALL_USERS_INFO_REJECTED':
     case 'LOGIN_REJECTED':
       Auth.deauthenticateUser();
       // eslint-disable-next-line
@@ -71,7 +76,9 @@ const user = function(state=userInitialState, action){
       Auth.authenticateUser(action.payload.data.token);
       // eslint-disable-next-line
     case 'GET_USER_INFO_FULFILLED':
+    case 'GET_ALL_USERS_INFO_FULFILLED':
       return { ...state, busy: false, justSignup: false, ...userData, userEmail };
+      // return { ...state, busy: false, ...userData, allUsers: action.payload.data}
 
     // ========================
     // SIGNUP FULFILLED ACTIONS
@@ -85,6 +92,8 @@ const user = function(state=userInitialState, action){
     // =============
     // OTHER ACTIONS
     // =============
+    case 'GET_ALL_THOS_FULFILLED':
+      return { ...state, busy: false, thos: action.payload.data}
     case 'LOGOUT':
       Auth.deauthenticateUser();
       return { ...userInitialState }

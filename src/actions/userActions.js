@@ -106,6 +106,19 @@ export function getUserInfo() {
   }
 }
 
+export function getAllUsersInfo() {
+  if (Auth.isUserAuthenticated()) {
+    return {
+        type: 'GET_ALL_USERS_INFO',
+        payload: axios('/api/users/allusers', {
+          headers: {authorization: `bearer ${Auth.getToken()}`}
+        })
+    };
+  } else {
+    return {type: 'DO_NOTHING'}
+  }
+}
+
 export function logout(){
   return {
     type: 'LOGOUT'

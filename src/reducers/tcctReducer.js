@@ -22,7 +22,8 @@ const tcctInitialState = {
       {postedTime: new Date(), username: "thanhacun@yahoo.com", comment: "Bài thơ cảm động quá!"},
       {postedTime: new Date(), username: "helloworld@gmail.com", comment: "Cảm ơn tác giả"}
     ]
-  }};
+  },
+};
 
 const tcct = (state=tcctInitialState, action, userData) => {
   const { type, payload } = action;
@@ -63,7 +64,6 @@ const tcct = (state=tcctInitialState, action, userData) => {
       return { ...state, busy: false, comments: payload.data.comments.reverse()}
     case 'GET_THO_REJECTED':
     case 'GET_THO_COMMENTS_REJECTED':
-      return { ...state, busy: false };
     case 'SELECT_HIT':
       return { ...state, thoIndex: {...state.thoIndex, ...payload}};
     case 'PATH_TO_INDEX':

@@ -1,4 +1,4 @@
-## Kim Bồng Miêu - Trương Quang Được ##
+## Kim Bồng Miêu - Theo cánh chim trời ##
 
 Theo cánh chim trời có thể xem như một nhật ký điền dã. Đó là phần còn lại, phần sâu lắng và
 tinh tế nhất của tác giả sau mỗi chuyến đi, sau mọi công việc. Với người đời, đi là đi, thấy là
@@ -28,22 +28,3 @@ Hà Nội, 10/7/2008
 Hữu Thĩnh
 
 Chủ tịch Hội Nhà văn Việt Nam
-
-## Các tính năng ##
-
-- ~~Cho phép user Signup~~
-
-- ~~Cho phép sử dụng Markdown~~
-
-
-## Công nghệ sử dụng ##
-
-- Fullstack Javascript Webapp
-
-  - creat-react-app
-
-  - Mongo database
-
-  - Node.js express
-
-- Alolia instant search

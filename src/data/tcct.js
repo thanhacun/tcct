@@ -11,6 +11,7 @@ import UserProfile from '../components/UserProfile';
 import UserConnect from '../components/UserConnect';
 import ShowTho from '../components/tcct/ShowTho';
 import About from '../components/tcct/About';
+import Dashboard from '../components/tcct/Dashboard';
 
 const tcctLinks = [
   {
@@ -72,6 +73,13 @@ const tcctLinks = [
     "des": "Thông tin",
     "component": About,
     "menu": true
+  },
+  {
+    "id": 8,
+    "path": "/tcct/dashboard",
+    "des": "Quản trị",
+    "component": Dashboard,
+    "menu": true
   }
 ];
 
@@ -117,6 +125,11 @@ const TCCTMenu = ({role}) =>
     <LinkContainer to={`/tcct/about`} key={`tcct_2`}>
       <NavItem>{`Thông tin`}</NavItem>
     </LinkContainer>
+    {(role && role.admin) &&
+      <LinkContainer to={`/tcct/dashboard`} key={`tcct_3`}>
+      <NavItem>{`Quản trị`}</NavItem>
+    </LinkContainer>
+    }
   </Nav>
 
 export default tcctRoutes;
