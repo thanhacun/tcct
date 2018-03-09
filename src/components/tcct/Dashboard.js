@@ -15,7 +15,7 @@ const dasboardContent = `
 | Tính năng                             | Công nghệ              |
 | ---                                   | ---                    |
 | ~~Sử dụng Markdown~~                  | Fullstack Javascript   |
-| ~~Đăng ký qua facebook và google  ~~    | Create-React-App       |
+| ~~Đăng ký qua facebook và google~~    | Create-React-App       |
 | ~~Cho phép bình luận~~                | Mongo database         |
 | Cho phép đề nghị thơ mới              | Node.js as api server  |
 | Themes: Sáng hoặc Tối                 | Redux                  |

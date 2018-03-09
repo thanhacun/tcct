@@ -1,18 +1,20 @@
 class Auth {
   static authenticateUser(token) {
-    localStorage.setItem('token', token);
+    // token can be a real token or false value in case of admin user
+    sessionStorage.setItem('token', token);
+    !token && sessionStorage.setItem('_isAdmin', true);  
   }
 
   static isUserAuthenticated() {
-    return localStorage.getItem('token') !== null;
+    return sessionStorage.getItem('token') !== null;
   }
 
   static deauthenticateUser() {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
   }
 
   static getToken() {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
 }
 

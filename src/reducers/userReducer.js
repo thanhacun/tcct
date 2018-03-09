@@ -84,6 +84,7 @@ const user = function(state=userInitialState, action){
     // SIGNUP FULFILLED ACTIONS
     // ========================
     case 'LOCAL_SIGNUP_FULFILLED':
+      Auth.authenticateUser(action.payload.data.token);
     case 'SOCIAL_SIGNUP_FULFILLED':
     case 'SOCIAL_CONNECT_FULFILLED':
     case 'SOCIAL_UNLINK_FULFILLED':
