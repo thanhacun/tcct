@@ -25,6 +25,7 @@ import busyLoading from '../busyLoading';
 import ShowJumbotron from './jumbotrons';
 
 const ConnectedSearchBox = connectSearchBox(({currentRefinement, refine, ...props}) => {
+  console.log(process.env);
   // const algoliaLogoStyle = {
   //   height: "20px"
   // };
