@@ -2,7 +2,7 @@ import axios from 'axios';
 import emit from '../websocket';
 import Auth from '../utils/Auth';
 
-const apiServer = (process.env.NODE_ENV === 'production') ? 'https://tcct-spa.herokuapp.com' : '';
+const apiServer = (process.env.NODE_ENV === 'production') ? '' : '';
 
 
 // [] NOTE: why cannot use object spread here?

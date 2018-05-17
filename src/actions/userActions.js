@@ -2,7 +2,7 @@ import axios from 'axios';
 import Auth from '../utils/Auth';
 
 // [] TODO: DRY
-const apiServer = process.env.NODE_ENV === 'production' ? 'https://tcct-api.herokuapp.com' : '';
+const apiServer = process.env.NODE_ENV === 'production' ? '' : '';
 
 export function localSignup(email, password){
   return {
