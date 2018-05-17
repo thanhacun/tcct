@@ -58,11 +58,11 @@
   },
   "proxy": {
     "/api": {
-      "target": "https://tcct-api.herokuapp.com",
+      "target": "http://api:3000",
       "ws": true
     },
     "/socket": {
-      "target": "ws://tcct-api.herokuapp.com",
+      "target": "ws://api:3000",
       "ws": true
     }
   }

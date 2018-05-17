@@ -1,31 +1,34 @@
 import axios from 'axios';
 import Auth from '../utils/Auth';
 
+// [] TODO: DRY
+const apiServer = process.env.NODE_ENV === 'production' ? 'https://tcct-api.herokuapp.com' : '';
+
 export function localSignup(email, password){
   return {
     type: 'LOCAL_SIGNUP',
-    payload: axios.post('/api/users/signup', {email, password})
+    payload: axios.post(apiServer + '/api/users/signup', {email, password})
   };
 }
 
 export function localLogin(email, password){
   return {
     type: 'LOGIN',
-    payload: axios.post('/api/users/login', { email, password })
+    payload: axios.post(apiServer + '/api/users/login', { email, password })
   };
 }
 
 export function localConnect(email, password, social_email, social_provider){
   return {
     type: 'LOCAL_CONN',
-    payload: axios.post('/api/users/info', { email, password, social_email, social_provider})
+    payload: axios.post(apiServer + '/api/users/info', { email, password, social_email, social_provider})
   };
 }
 
 export function socialSignup(socialResponse){
   return {
     type: 'SOCIAL_SIGNUP',
-    payload: axios.get('/api/users/social/signup', {
+    payload: axios.get(apiServer + '/api/users/social/signup', {
       headers: {
         access_token: socialResponse._token.accessToken,
         strategy: `${socialResponse._provider}-token`
@@ -37,7 +40,7 @@ export function socialSignup(socialResponse){
 export function socialLogin(socialResponse){
   return {
     type: 'SOCIAL_LOGIN',
-    payload: axios.get('/api/users/social/login', {
+    payload: axios.get(apiServer + '/api/users/social/login', {
       headers: {
         access_token: socialResponse._token.accessToken,
         strategy: `${socialResponse._provider}-token`
@@ -49,7 +52,7 @@ export function socialLogin(socialResponse){
 export function socialConnect(socialResponse, local_email){
   return {
     type: 'SOCIAL_CONNECT',
-    payload: axios.get('/api/users/social/connect', {
+    payload: axios.get(apiServer + '/api/users/social/connect', {
       headers: {
         access_token: socialResponse._token.accessToken,
         strategy: `${socialResponse._provider}-token`,
@@ -62,7 +65,7 @@ export function socialConnect(socialResponse, local_email){
 export function socialUnlink(socialResponse){
   return {
     type: 'SOCIAL_UNLINK',
-    payload: axios.get('/api/users/social/unlink', {
+    payload: axios.get(apiServer + '/api/users/social/unlink', {
       headers: {
         access_token: socialResponse._token.accessToken,
         strategy: `${socialResponse._provider}-token`
@@ -97,7 +100,7 @@ export function getUserInfo() {
   if (Auth.isUserAuthenticated()){
     return {
       type: 'GET_USER_INFO',
-      payload: axios('/api/users/getinfo', {
+      payload: axios(apiServer + '/api/users/getinfo', {
         headers: {authorization: `bearer ${Auth.getToken()}`}
       })
     };
@@ -110,7 +113,7 @@ export function getAllUsersInfo() {
   if (Auth.isUserAuthenticated()) {
     return {
         type: 'GET_ALL_USERS_INFO',
-        payload: axios('/api/users/allusers', {
+        payload: axios(apiServer + '/api/users/allusers', {
           headers: {authorization: `bearer ${Auth.getToken()}`}
         })
     };

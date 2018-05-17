@@ -2,6 +2,9 @@ import axios from 'axios';
 import emit from '../websocket';
 import Auth from '../utils/Auth';
 
+const apiServer = (process.env.NODE_ENV === 'production') ? 'https://tcct-spa.herokuapp.com' : '';
+
+
 // [] NOTE: why cannot use object spread here?
 // const headerAuth = {authorization: `bearer ${Auth.getToken()}`};
 
@@ -20,7 +23,7 @@ export function modifyTho(modifiedTho, modifyAction){
     type: 'MODIFY_THO',
     payload: axios({
       method: 'POST',
-      url: '/api/tcct/tho',
+      url: apiServer + '/api/tcct/tho',
       headers: {authorization: `bearer ${Auth.getToken()}`},
       data: {modifiedTho, modifyAction}
     })
@@ -37,14 +40,14 @@ export function saveDraftTho(newTho){
 export function getTho(index){
   return {
     type: 'GET_THO',
-    payload: axios.get(`/api/tcct/tho/${index}`)
+    payload: axios.get(`${apiServer}/api/tcct/tho/${index}`)
   }
 };
 
 export function getAllThos() {
   return {
     type: 'GET_ALL_THOS',
-    payload: axios.get(`/api/tcct/allthos`)
+    payload: axios.get(`${apiServer}/api/tcct/allthos`)
   }
 }
 
@@ -58,7 +61,7 @@ export function selectHit(hit) {
 export function getThoComments(thoIndex) {
   return {
     type: 'GET_THO_COMMENTS',
-    payload: axios.get(`/api/tcct/tho/${thoIndex}/comments`)
+    payload: axios.get(`${apiServer}/api/tcct/tho/${thoIndex}/comments`)
   }
 }
 
@@ -69,7 +72,7 @@ export function postThoComment(thoIndex, postedComment, commentAction) {
       // NOTE: using axios OPTIONS to send post request with data and headers
       () => axios({
         method: 'POST',
-        url: `/api/tcct/tho/${thoIndex}/comment`,
+        url: `${apiServer}/api/tcct/tho/${thoIndex}/comment`,
         headers: {authorization: `bearer ${Auth.getToken()}`},
         // headers: { ...headerAuth },
         data: {postedComment, commentAction}
