@@ -17,7 +17,6 @@ const SocialUserInfo = ({provider, bsStyle, ...props}) =>
         {(token)
           ? <p>
             <strong>id</strong>: {id} <br/>
-            <strong>token</strong>: {token.split('').slice(0, 12).join('') + '...'} <br/>
             <strong>email</strong>: {email} <br/>
             <strong>name</strong>: {name} <br/>
 
@@ -60,23 +59,12 @@ class UserProfile extends Component {
               {this.props.local && this.props.local.email &&
                 <p>
                   <strong>email</strong>: {this.props.local.email} <br/>
-                  <strong>token</strong>: {this.props.local.password.split('').slice(0,12).join('') + '...'}
-
                   {/* <a href="" className="btn btn-default" disabled>Unlink</a> */}
                 </p>
               }
-              {/* {(this.props.local.email) ?
-                <p>
-                  <strong>email</strong>: {this.props.local.email} <br/>
-                  <strong>password</strong>: {this.props.local.password.split('').slice(0,12).join('') + '...'}
-
-                  <a href="" className="btn btn-default" disabled>Unlink</a>
-                </p> :
-                <a onClick={() => this.props.goTo('/connect/local')} className="btn btn-default" disabled>Connect Local</a>} */}
             </Well>
           </Col>
 
-          {/* FACEBOOK INFORMATION */}
           <Col sm={6}>
             <SocialUserInfo provider="facebook" bsStyle="primary"
               socialUnlink={this.props.socialUnlink} {...this.props.facebook}
